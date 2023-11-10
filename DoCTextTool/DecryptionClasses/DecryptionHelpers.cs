@@ -19,7 +19,7 @@ namespace DoCTextTool.DecryptionClasses
             }
             if (!isValid)
             {
-                ExitType.Error.ExitProgram("Decryption body is not in a valid length");
+                ExitType.Error.ExitProgram("Length of the body to decrypt is not valid");
             }
         }
 
