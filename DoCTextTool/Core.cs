@@ -9,14 +9,14 @@ namespace DoCTextTool
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("");
+
             if (args.Length < 2)
             {
                 var warnMsg = "Enough arguments not specified\n\n";
                 var warnMsgExample = "Examples:\nDoCTextTool.exe -e \"string_us.bin\"\nDoCTextTool.exe -c \"string_us.txt\"";
                 ExitType.Warning.ExitProgram(warnMsg + warnMsgExample);
             }
-
-            Console.WriteLine("");
 
             var toolActionSwitch = new ActionSwitches();
             if (Enum.TryParse(args[0].Replace("-", ""), false, out ActionSwitches convertedActionSwitch))
@@ -48,7 +48,7 @@ namespace DoCTextTool
             }
             catch (Exception ex)
             {
-                ExitType.Error.ExitProgram($"An Exception has occured\n\n{ex}");
+                ExitType.Error.ExitProgram($"An Exception has occured\n{ex}");
             }
         }
 

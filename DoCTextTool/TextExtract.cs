@@ -19,6 +19,9 @@ namespace DoCTextTool
             {
                 using (var inFileReader = new BinaryReader(inFileStream))
                 {
+                    inFileStream.Length.LengthCheck();
+                    ((uint)inFileStream.Length).ReadLengthCheck();
+
                     inFileReader.BaseStream.Position = 0;
                     if (inFileReader.ReadUInt64() != 10733845617377775685)
                     {
@@ -31,9 +34,10 @@ namespace DoCTextTool
                         {
                             using (var decryptedStreamWriter = new BinaryWriter(decryptedStream))
                             {
-
                                 // Header
                                 Decryption.DecryptSection(KeyArrays.KeyblocksHeader, 4, 0, 0, inFileReader, decryptedStreamWriter);
+
+                                ((uint)inFileStream.Length).ReadLengthCheck();
 
                                 var header = new FileStructs.Header();
 
@@ -61,6 +65,8 @@ namespace DoCTextTool
 
                                 var decryptionBodySize = new FileInfo(inFile).Length - header.UnencTxtSize - 32;
                                 var blockCount = (uint)decryptionBodySize / 8;
+
+                                decryptionBodySize.LengthCheck();
 
                                 Decryption.DecryptSection(KeyArrays.KeyBlocksMainBody, blockCount, 32, 32, inFileReader, decryptedStreamWriter);
 
