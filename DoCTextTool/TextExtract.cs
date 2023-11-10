@@ -78,7 +78,7 @@ namespace DoCTextTool
                                 Console.WriteLine("");
                                 Console.WriteLine("Extracting lines....");
 
-                                LinesLibrary.ExtractLines(decryptedStream, isCompressed, (uint)decryptionBodySize, header.LineCount, outFile);
+                                LinesParser.ExtractLines(decryptedStream, isCompressed, (uint)decryptionBodySize, header.LineCount, outFile);
 
                                 Console.WriteLine("");
                                 ExitType.Success.ExitProgram("Finished extracting lines to text file");

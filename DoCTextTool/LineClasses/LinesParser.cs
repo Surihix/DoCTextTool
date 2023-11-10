@@ -1,12 +1,12 @@
-﻿using DoCTextTool.LinesClasses;
-using DoCTextTool.SupportClasses;
+﻿using DoCTextTool.SupportClasses;
+using Ionic.Zlib;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
 namespace DoCTextTool.LineClasses
 {
-    internal class LinesLibrary
+    internal class LinesParser
     {
         public static void ExtractLines(Stream decryptedStream, bool isCompressed, uint bodySize, ushort lineCount, string outFile)
         {
@@ -22,7 +22,10 @@ namespace DoCTextTool.LineClasses
                     switch (isCompressed)
                     {
                         case true:
-                            decryptedStream.ZlibDecompress(outStream);
+                            using (ZlibStream decompressor = new ZlibStream(decryptedStream, CompressionMode.Decompress, true))
+                            {
+                                decompressor.CopyTo(outStream);
+                            }
                             break;
 
                         case false:

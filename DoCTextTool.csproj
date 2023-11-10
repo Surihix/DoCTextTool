@@ -46,13 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DoCTextTool\LineClasses\ZlibLibrary.cs" />
     <Compile Include="DoCTextTool\SupportClasses\FileStructs.cs" />
     <Compile Include="DoCTextTool\SupportClasses\CmnMethods.cs" />
     <Compile Include="DoCTextTool\DecryptionClasses\DecryptionHelpers.cs" />
     <Compile Include="DoCTextTool\DecryptionClasses\KeyArrays.cs" />
     <Compile Include="DoCTextTool\DecryptionClasses\Decryption.cs" />
-    <Compile Include="DoCTextTool\LineClasses\LinesLibrary.cs" />
+    <Compile Include="DoCTextTool\LineClasses\LinesParser.cs" />
     <Compile Include="DoCTextTool\TextExtract.cs" />
     <Compile Include="DoCTextTool\Core.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
