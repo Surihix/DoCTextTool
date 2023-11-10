@@ -13,8 +13,6 @@ namespace DoCTextTool
         {
             var outFile = Path.Combine(Path.GetDirectoryName(inFile), $"{Path.GetFileNameWithoutExtension(inFile)}.txt");
 
-            outFile.IfFileExistsDel();
-
             using (var inFileStream = new FileStream(inFile, FileMode.Open, FileAccess.Read))
             {
                 using (var inFileReader = new BinaryReader(inFileStream))
@@ -26,10 +24,26 @@ namespace DoCTextTool
                     inFileStream.Length.LengthCheck();
                     ((uint)inFileStream.Length).ReadLengthCheck();
 
+                    // Check header
                     inFileReader.BaseStream.Position = 0;
-                    if (inFileReader.ReadUInt64() != 10733845617377775685)
+                    var headerValue = inFileReader.ReadUInt64();
+
+                    // If its not the encrypted
+                    // header, then check if its
+                    // the decrypted header
+                    if (headerValue != 10733845617377775685)
                     {
-                        ExitType.Error.ExitProgram("This is not a valid Dirge Of Cerberus text file");
+                        if (headerValue != 1)
+                        {
+                            ExitType.Error.ExitProgram("This is not a valid Dirge Of Cerberus text file");
+                        }
+                    }
+
+                    // Set a bool to decrypt
+                    var isEncrypted = true;
+                    if (headerValue == 1)
+                    {
+                        isEncrypted = false;
                     }
 
                     using (var decryptedStream = new MemoryStream())
@@ -38,11 +52,22 @@ namespace DoCTextTool
                         {
                             using (var decryptedStreamWriter = new BinaryWriter(decryptedStream))
                             {
-                                // Header
-                                Decryption.DecryptSection(KeyArrays.KeyblocksHeader, 4, 0, 0, inFileReader, decryptedStreamWriter);
+                                // If not encrypted, copy
+                                // the data directly to
+                                // the decrypted stream
+                                if (!isEncrypted)
+                                {
+                                    inFileStream.Seek(0, SeekOrigin.Begin);
+                                    inFileStream.CopyTo(decryptedStream);
+                                }
+
+                                if (isEncrypted)
+                                {
+                                    // Header
+                                    Decryption.DecryptSection(KeyArrays.KeyblocksHeader, 4, 0, 0, inFileReader, decryptedStreamWriter);
+                                }
 
                                 var header = new FileStructs.Header();
-
                                 decryptedStreamReader.BaseStream.Position = 8;
                                 header.LineCount = decryptedStreamReader.ReadUInt16();
 
@@ -72,7 +97,10 @@ namespace DoCTextTool
                                 // body is valid
                                 decryptionBodySize.LengthCheck();
 
-                                Decryption.DecryptSection(KeyArrays.KeyBlocksMainBody, blockCount, 32, 32, inFileReader, decryptedStreamWriter);
+                                if (isEncrypted)
+                                {
+                                    Decryption.DecryptSection(KeyArrays.KeyBlocksMainBody, blockCount, 32, 32, inFileReader, decryptedStreamWriter);
+                                }
 
                                 // Debugging purpose
                                 //File.WriteAllBytes("DecryptedDataTest", decryptedStream.ToArray());
