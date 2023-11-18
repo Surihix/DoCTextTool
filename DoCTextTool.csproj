@@ -46,6 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DoCTextTool\EncryptionClasses\Encryption.cs" />
+    <Compile Include="DoCTextTool\EncryptionClasses\EncryptionHelpers.cs" />
+    <Compile Include="DoCTextTool\EncryptionClasses\KeyArrays.cs" />
     <Compile Include="DoCTextTool\SupportClasses\FileStructs.cs" />
     <Compile Include="DoCTextTool\SupportClasses\CmnMethods.cs" />
     <Compile Include="DoCTextTool\DecryptionClasses\DecryptionHelpers.cs" />
