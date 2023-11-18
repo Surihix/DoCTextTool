@@ -7,8 +7,8 @@
             public uint SeedValueA;
             public uint SeedValueB;
             public ushort LineCount;
-            public int Reserved;
-            public int DcmpFlag;
+            public byte Reserved;
+            public byte DcmpFlag;
             public uint UnencTxtSize;
             public uint DcmpBodySize;
             public uint TotalFileSize;

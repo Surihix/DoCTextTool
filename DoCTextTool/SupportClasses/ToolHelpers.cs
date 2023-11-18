@@ -4,7 +4,7 @@ using System.IO;
 
 namespace DoCTextTool.SupportClasses
 {
-    internal static class CmnMethods
+    internal static class ToolHelpers
     {
         public static void ExitProgram(this ExitType typeCode, string exitMsg)
         {
@@ -13,10 +13,6 @@ namespace DoCTextTool.SupportClasses
             {
                 case ExitType.Error:
                     exitType = "Error";
-                    break;
-
-                case ExitType.Warning:
-                    exitType = "Warning";
                     break;
 
                 case ExitType.Success:

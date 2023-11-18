@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace DoCTextTool.EncryptionClasses
+namespace DoCTextTool.CryptographyClasses
 {
     internal class Encryption
     {
@@ -22,87 +22,36 @@ namespace DoCTextTool.EncryptionClasses
                 long bytesToEncryptHigherVal = bytesToEncryptHigherArray.ArrayToLongHexNum();
 
 
-                var blockByteCounterHex = blockByteCounter.ToString("X8");
-                var hex1 = Convert.ToUInt32(blockByteCounterHex[6] + "" + blockByteCounterHex[7], 16);
-                var hex2 = Convert.ToUInt32(blockByteCounterHex[4] + "" + blockByteCounterHex[5], 16);
-                var hex3 = Convert.ToUInt32(blockByteCounterHex[2] + "" + blockByteCounterHex[3], 16);
-                var hex4 = Convert.ToUInt32(blockByteCounterHex[0] + "" + blockByteCounterHex[1], 16);
-                var blockByteCounterArray = new byte[4] { (byte)hex1, (byte)hex2, (byte)hex3, (byte)hex4 };
-                var blockByteCounterLowerArray = new byte[] { blockByteCounterArray[1], blockByteCounterArray[0] };
-
-                var blockByteCounterLowerMostHex = blockByteCounterLowerArray[0].ToString("X2") +
-                    "" + blockByteCounterLowerArray[1].ToString("X2");
-                var blockByteCounterLowerMost = Convert.ToUInt16(blockByteCounterLowerMostHex, 16);
-
-                blockByteCounterLowerMost >>= 3;
-                blockByteCounterLowerMost <<= 3;
-                var keyBlockOffset = (uint)blockByteCounterLowerMost & 248;
+                // Setup BlockByteCounter variables
+                uint keyBlockOffset = 0;
+                uint blockByteCounter_Eval = 0;
+                uint blockByteCounter_Fval = 0;
+                CryptographyHelpers.BlockByteCounterSetup(blockByteCounter, ref keyBlockOffset, ref blockByteCounter_Eval, ref blockByteCounter_Fval);
 
 
-                var keyBlockActiveLowerArray = new byte[] { currentKeyBlock[keyBlockOffset + 3],
-                            currentKeyBlock[keyBlockOffset + 2], currentKeyBlock[keyBlockOffset + 1],
-                            currentKeyBlock[keyBlockOffset + 0] };
-
-                var keyBlockActiveHigherArray = new byte[] { currentKeyBlock[keyBlockOffset + 7],
-                            currentKeyBlock[keyBlockOffset + 6], currentKeyBlock[keyBlockOffset + 5],
-                            currentKeyBlock[keyBlockOffset + 4] };
-
-                var keyBlockActiveLowerValue = keyBlockActiveLowerArray.ArrayToUIntHexNum();
-                var keyBlockActiveHigherValue = keyBlockActiveHigherArray.ArrayToUIntHexNum();
+                // Setup KeyBlock variables
+                uint keyBlockActiveLowerValue = 0;
+                uint keyBlockActiveHigherValue = 0;
+                CryptographyHelpers.KeyBlockSetup(currentKeyBlock, keyBlockOffset, ref keyBlockActiveLowerValue, ref keyBlockActiveHigherValue);
 
 
-                long blockByteCounter_AB_shiftVal = (long)blockByteCounter << 10;
-                long blockByteCounter_CD_shiftVal = (long)blockByteCounter << 20;
-                long blockByteCounter_EF_shiftVal = (long)blockByteCounter << 30;
-
-                var blockByteCounter_AB_array = blockByteCounter_AB_shiftVal.LongHexToArray();
-                var blockByteCounter_A_array = new byte[] { blockByteCounter_AB_array[3], blockByteCounter_AB_array[2], blockByteCounter_AB_array[1], blockByteCounter_AB_array[0] };
-                var blockByteCounter_B_array = new byte[] { blockByteCounter_AB_array[7], blockByteCounter_AB_array[6], blockByteCounter_AB_array[5], blockByteCounter_AB_array[4] };
-                var blockByteCounter_Aval = blockByteCounter_A_array.ArrayToUIntHexNum();
-                var blockByteCounter_Bval = blockByteCounter_B_array.ArrayToUIntHexNum();
-
-                var blockByteCounter_CD_array = blockByteCounter_CD_shiftVal.LongHexToArray();
-                var blockByteCounter_C_array = new byte[] { blockByteCounter_CD_array[3], blockByteCounter_CD_array[2], blockByteCounter_CD_array[1], blockByteCounter_CD_array[0] };
-                var blockByteCounter_D_array = new byte[] { blockByteCounter_CD_array[7], blockByteCounter_CD_array[6], blockByteCounter_CD_array[5], blockByteCounter_CD_array[4] };
-                var blockByteCounter_Cval = blockByteCounter_C_array.ArrayToUIntHexNum();
-                var blockByteCounter_Dval = blockByteCounter_D_array.ArrayToUIntHexNum();
-
-                blockByteCounter_Cval |= blockByteCounter_Aval;
-                blockByteCounter_Dval |= blockByteCounter_Bval;
-
-                var blockByteCounter_EF_array = blockByteCounter_EF_shiftVal.LongHexToArray();
-                var blockByteCounter_E_array = new byte[] { blockByteCounter_EF_array[3], blockByteCounter_EF_array[2], blockByteCounter_EF_array[1], blockByteCounter_EF_array[0] };
-                var blockByteCounter_F_array = new byte[] { blockByteCounter_EF_array[7], blockByteCounter_EF_array[6], blockByteCounter_EF_array[5], blockByteCounter_EF_array[4] };
-                var blockByteCounter_Eval = blockByteCounter_E_array.ArrayToUIntHexNum();
-                var blockByteCounter_Fval = blockByteCounter_F_array.ArrayToUIntHexNum();
-
-                blockByteCounter_Eval |= blockByteCounter;
-                blockByteCounter_Fval |= 0;
-
-                blockByteCounter_Eval |= blockByteCounter_Cval;
-                blockByteCounter_Fval |= blockByteCounter_Dval;
+                // Setup SpecialKey variables
+                uint carryFlag = 0;
+                long specialKey1 = 0;
+                long specialKey2 = 0;
+                CryptographyHelpers.SpecialKeySetup(ref carryFlag, blockByteCounter_Eval, blockByteCounter_Fval, ref specialKey1, ref specialKey2);
 
 
-                uint carryFlag;
-                if (blockByteCounter_Eval > 1587207352)
-                {
-                    carryFlag = 1;
-                }
-                else
-                {
-                    carryFlag = 0;
-                }
-
-                long specialKey1 = (long)blockByteCounter_Eval + 2707759943;
-                long specialKey2 = (long)blockByteCounter_Fval + carryFlag;
-
-
-                // Step 1
+                // XOR the bytes to encrypt 
+                // with the KeyBlock variables
                 bytesToEncryptLowerVal ^= keyBlockActiveLowerValue;
                 bytesToEncryptHigherVal ^= keyBlockActiveHigherValue;
 
 
-                // Step 2
+                // XOR the bytes to encrypt 
+                // with the SpecialKey
+                // variables and increase the
+                // bytes with the KeyBlock variables
                 bytesToEncryptLowerVal ^= specialKey1;
                 bytesToEncryptHigherVal ^= specialKey2;
 
@@ -110,7 +59,12 @@ namespace DoCTextTool.EncryptionClasses
                 bytesToEncryptHigherVal += keyBlockActiveHigherValue;
 
 
-                // Step 3
+                // Adjust the lower value bytes
+                // to be a positive value in hex
+                // and compare that adjusted value
+                // to determine the carryFlag value.
+                // After that increase the higher 
+                // value bytes with the carryFlag value
                 var bytesToEncLowerValFixedHex = bytesToEncryptLowerVal.ToString("X16");
                 var bytesToEncLowerValFixedHexNum = bytesToEncLowerValFixedHex[8] + "" + bytesToEncLowerValFixedHex[9] +
                     "" + bytesToEncLowerValFixedHex[10] + "" + bytesToEncLowerValFixedHex[11] +
@@ -130,7 +84,9 @@ namespace DoCTextTool.EncryptionClasses
                 bytesToEncryptHigherVal += carryFlag;
 
 
-                // Step 4
+                // Arrange the bytes in such a way
+                // that only the rightmost digits
+                // are remaining
                 var computedBytesHexHighVal = bytesToEncryptHigherVal.ToString("X16");
                 var b1 = Convert.ToUInt32(computedBytesHexHighVal[14] + "" + computedBytesHexHighVal[15], 16);
                 var b2 = Convert.ToUInt32(computedBytesHexHighVal[12] + "" + computedBytesHexHighVal[13], 16);
@@ -147,7 +103,10 @@ namespace DoCTextTool.EncryptionClasses
                         (byte)b1, (byte)b2, (byte)b3, (byte)b4 };
 
 
-                // Step 5
+                // Reverse shift all of
+                // the byte value 8 times
+                // and perform a XOR
+                // operation
                 var encryptedByte1 = computedBytesArray[0].LoopAByteReverse(currentKeyBlock, keyBlockOffset);
                 encryptedByte1 = ((currentBlockId.XOR(69)) & 255).XOR(encryptedByte1);
 
@@ -173,7 +132,8 @@ namespace DoCTextTool.EncryptionClasses
                 encryptedByte8 = encryptedByte7.XOR(encryptedByte8);
 
 
-                // Final step
+                // Store the bytes in a array
+                // and write it to the stream
                 var encryptedByteArray = new byte[] { (byte)encryptedByte1, (byte)encryptedByte2, (byte)encryptedByte3,
                     (byte)encryptedByte4, (byte)encryptedByte5, (byte)encryptedByte6, (byte)encryptedByte7, (byte)encryptedByte8 };
 
@@ -184,10 +144,10 @@ namespace DoCTextTool.EncryptionClasses
                 // Debugging purpose
                 //Console.Write($"Block: {i}  ");
 
-                //Console.WriteLine(encryptedByte1.ToString("X2") + " " + encryptedByte2.ToString("X2") + " " +
-                //    encryptedByte3.ToString("X2") + " " + encryptedByte4.ToString("X2") + " " +
-                //    encryptedByte5.ToString("X2") + " " + encryptedByte6.ToString("X2") + " " +
-                //    encryptedByte7.ToString("X2") + " " + encryptedByte8.ToString("X2"));
+                //Console.WriteLine(encryptedByteArray[0].ToString("X2") + " " + encryptedByteArray[1].ToString("X2") + " " +
+                //    encryptedByteArray[2].ToString("X2") + " " + encryptedByteArray[3].ToString("X2") + " " +
+                //    encryptedByteArray[4].ToString("X2") + " " + encryptedByteArray[5].ToString("X2") + " " +
+                //    encryptedByteArray[6].ToString("X2") + " " + encryptedByteArray[7].ToString("X2"));
                 //Console.WriteLine("");
 
 

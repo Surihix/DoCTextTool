@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DoCTextTool.LineClasses
 {
-    internal class LinesParser
+    internal class LinesExtractor
     {
         public static void ExtractLines(Stream decryptedStream, bool isCompressed, uint bodySize, ushort lineCount, string outFile)
         {

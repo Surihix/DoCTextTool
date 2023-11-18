@@ -1,10 +1,9 @@
-﻿using DoCTextTool.SupportClasses;
-using System;
-using static DoCTextTool.SupportClasses.CmnMethods;
+﻿using System;
+using static DoCTextTool.SupportClasses.ToolHelpers;
 
-namespace DoCTextTool.DecryptionClasses
+namespace DoCTextTool.CryptographyClasses
 {
-    internal static class DecryptionHelpers
+    internal static class CryptographyFunctions
     {
         public static void LengthCheck(this long decryptionBodySize)
         {
@@ -12,7 +11,7 @@ namespace DoCTextTool.DecryptionClasses
             if (decryptionBodySize % 8 != 0)
             {
                 isValid = false;
-            }                    
+            }
             if (decryptionBodySize <= 0)
             {
                 isValid = false;
@@ -23,6 +22,7 @@ namespace DoCTextTool.DecryptionClasses
             }
         }
 
+
         public static void ReadLengthCheck(this uint readSize)
         {
             if (readSize < 32)
@@ -31,12 +31,14 @@ namespace DoCTextTool.DecryptionClasses
             }
         }
 
+
         public static uint XOR(this uint leftVal, uint rightVal)
         {
             var computedXOR = leftVal ^ rightVal;
 
             return Convert.ToUInt32(computedXOR.ToString("X2"), 16);
         }
+
 
         public static uint LoopAByte(this uint decryptedByte, byte[] currentKeyBlock, uint currentKeyBlockOffset)
         {
@@ -65,6 +67,7 @@ namespace DoCTextTool.DecryptionClasses
             return decryptedByte;
         }
 
+
         public static byte[] LongHexToArray(this long value)
         {
             var computedHex = value.ToString("X16");
@@ -81,6 +84,7 @@ namespace DoCTextTool.DecryptionClasses
             return hexNumArray;
         }
 
+
         public static byte[] LongHexToUIntHexArray(this long value)
         {
             var computedLongHex = value.ToString("X16");
@@ -93,12 +97,52 @@ namespace DoCTextTool.DecryptionClasses
             return hexNumArray;
         }
 
+
         public static uint ArrayToUIntHexNum(this byte[] byteArray)
         {
             var hexValue = byteArray[0].ToString("X2") + "" + byteArray[1].ToString("X2") + "" +
                 byteArray[2].ToString("X2") + "" + byteArray[3].ToString("X2");
 
             return Convert.ToUInt32(hexValue, 16);
+        }
+
+
+        public static long ArrayToLongHexNum(this byte[] byteArray)
+        {
+            var hexValue = "FFFFFFFF";
+            hexValue += byteArray[0].ToString("X2") + "" + byteArray[1].ToString("X2") + "" + byteArray[2].ToString("X2") +
+                "" + byteArray[3].ToString("X2");
+
+            return Convert.ToInt64(hexValue, 16);
+        }
+
+
+        public static uint LoopAByteReverse(this byte byteToEncrypt, byte[] currentKeyBlock, uint currentKeyBlockOffset)
+        {
+            var byteIterator = 7;
+
+            while (byteIterator > -1)
+            {
+                var keyBlockByte = currentKeyBlock[currentKeyBlockOffset + byteIterator];
+                var integerValUsed = keyBlockByte + byteToEncrypt;
+
+                if (integerValUsed > 255)
+                {
+                    var negativeHexVal = "FFFFFF";
+                    negativeHexVal += byteToEncrypt.ToString("X2");
+
+                    integerValUsed = Convert.ToInt32(negativeHexVal, 16) + keyBlockByte;
+                    byteToEncrypt = (byte)Array.IndexOf(KeyArrays.Integers, (byte)integerValUsed);
+                }
+                else
+                {
+                    byteToEncrypt = (byte)Array.IndexOf(KeyArrays.Integers, (byte)integerValUsed);
+                }
+
+                byteIterator--;
+            }
+
+            return byteToEncrypt;
         }
     }
 }

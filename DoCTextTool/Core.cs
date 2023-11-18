@@ -1,7 +1,8 @@
-﻿using DoCTextTool.SupportClasses;
+﻿using DoCTextTool.DoCTextTool;
+using DoCTextTool.SupportClasses;
 using System;
 using System.IO;
-using static DoCTextTool.SupportClasses.CmnMethods;
+using static DoCTextTool.SupportClasses.ToolHelpers;
 
 namespace DoCTextTool
 {
@@ -38,11 +39,16 @@ namespace DoCTextTool
                             ExitType.Error.ExitProgram("Specified file is missing");
                         }
 
-                        TextExtract.ExtractProcess(args[1]);
+                        TextExtractor.ExtractProcess(args[1]);
                         break;
 
                     case ActionSwitches.c:
-                        ExitType.Warning.ExitProgram("Unimplemented");
+                        if (!File.Exists(args[1]))
+                        {
+                            ExitType.Error.ExitProgram("Specified file is missing");
+                        }
+
+                        TextConverter.ConvertProcess(args[1]);
                         break;
                 }
             }
