@@ -1,37 +1,9 @@
 ﻿using System;
-using static DoCTextTool.SupportClasses.ToolHelpers;
 
 namespace DoCTextTool.CryptographyClasses
 {
     internal static class CryptographyFunctions
     {
-        public static void LengthCheck(this long decryptionBodySize)
-        {
-            var isValid = true;
-            if (decryptionBodySize % 8 != 0)
-            {
-                isValid = false;
-            }
-            if (decryptionBodySize <= 0)
-            {
-                isValid = false;
-            }
-            if (!isValid)
-            {
-                ExitType.Error.ExitProgram("Length of the body to decrypt is not valid");
-            }
-        }
-
-
-        public static void ReadLengthCheck(this uint readSize)
-        {
-            if (readSize < 32)
-            {
-                ExitType.Error.ExitProgram("Header length is too small for reading");
-            }
-        }
-
-
         public static uint XOR(this uint leftVal, uint rightVal)
         {
             var computedXOR = leftVal ^ rightVal;
