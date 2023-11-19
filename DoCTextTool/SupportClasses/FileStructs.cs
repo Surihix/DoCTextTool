@@ -9,7 +9,7 @@
             public ushort LineCount;
             public byte Reserved;
             public byte DcmpFlag;
-            public uint UnencTxtSize;
+            public uint DecryptTxtSize;
             public uint DcmpBodySize;
             public uint TotalFileSize;
             public uint HeaderSize;

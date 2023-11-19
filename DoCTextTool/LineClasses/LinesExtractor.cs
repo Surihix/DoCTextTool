@@ -45,6 +45,14 @@ namespace DoCTextTool.LineClasses
                             var readPos = 32;
                             uint writePos = 0;
 
+                            // Write line count
+                            var lineCountNum = Convert.ToString(lineCount);
+                            var lineCountNumList = new List<byte>();
+                            ProcessNumStringToList(lineCountNum, lineCountNumList);
+                            WriteEachByte(lineCountNumList, outTxtBinWriter, ref writePos);
+                            MoveToNextLine(outTxtBinWriter, writePos);
+                            writePos = (uint)outTxtBinWriter.BaseStream.Position;
+
                             for (int l = 0; l < lineCount; l++)
                             {
                                 // Get offsets
@@ -60,10 +68,7 @@ namespace DoCTextTool.LineClasses
                                 // Write UnkID
                                 var unkId = Convert.ToString(lineOffsets.UnknownId);
                                 var unkIdList = new List<byte>();
-                                foreach (var num in unkId)
-                                {
-                                    unkIdList.Add(Convert.ToByte(num));
-                                }
+                                ProcessNumStringToList(unkId, unkIdList);
                                 WriteEachByte(unkIdList, outTxtBinWriter, ref writePos);
                                 WriteSeparator(outTxtBinWriter, writePos);
                                 writePos = (uint)outTxtBinWriter.BaseStream.Position;
@@ -82,9 +87,7 @@ namespace DoCTextTool.LineClasses
                                 writePos = (uint)outTxtBinWriter.BaseStream.Position;
 
                                 // Move to next line
-                                outTxtBinWriter.BaseStream.Position = writePos;
-                                outTxtBinWriter.Write((byte)13);
-                                outTxtBinWriter.Write((byte)10);
+                                MoveToNextLine(outTxtBinWriter, writePos);
                                 writePos = (uint)outTxtBinWriter.BaseStream.Position;
 
                                 readPos += 12;
@@ -102,25 +105,40 @@ namespace DoCTextTool.LineClasses
             }
         }
 
-        static void WriteEachByte(List<byte> stringBytesList, BinaryWriter outFileWriter, ref uint writePos)
+        static void ProcessNumStringToList(string numberValue, List<byte> stringBytesList)
+        {
+            foreach (var num in numberValue)
+            {
+                stringBytesList.Add(Convert.ToByte(num));
+            }
+        }
+
+        static void WriteEachByte(List<byte> stringBytesList, BinaryWriter outTxtBinWriter, ref uint writePos)
         {
             foreach (var stringByte in stringBytesList)
             {
-                outFileWriter.BaseStream.Position = writePos;
-                outFileWriter.Write(stringByte);
+                outTxtBinWriter.BaseStream.Position = writePos;
+                outTxtBinWriter.Write(stringByte);
                 writePos += 1;
             }
 
-            writePos = (uint)outFileWriter.BaseStream.Position;
+            writePos = (uint)outTxtBinWriter.BaseStream.Position;
         }
 
-        static void WriteSeparator(BinaryWriter outFileWriter, uint writePos)
+        static void MoveToNextLine(BinaryWriter outTxtBinWriter, uint writePos)
         {
-            outFileWriter.BaseStream.Position = writePos;
-            outFileWriter.Write((byte)32);
-            outFileWriter.Write((byte)124);
-            outFileWriter.Write((byte)124);
-            outFileWriter.Write((byte)32);
+            outTxtBinWriter.BaseStream.Position = writePos;
+            outTxtBinWriter.Write((byte)13);
+            outTxtBinWriter.Write((byte)10);
+        }
+
+        static void WriteSeparator(BinaryWriter outTxtBinWriter, uint writePos)
+        {
+            outTxtBinWriter.BaseStream.Position = writePos;
+            outTxtBinWriter.Write((byte)32);
+            outTxtBinWriter.Write((byte)124);
+            outTxtBinWriter.Write((byte)124);
+            outTxtBinWriter.Write((byte)32);
         }
     }
 }
