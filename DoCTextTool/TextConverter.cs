@@ -87,6 +87,7 @@ namespace DoCTextTool.DoCTextTool
                                                 using (var cmpBodyWriter = new BinaryWriter(cmpBodyStream))
                                                 {
                                                     // Compress body section
+                                                    Console.WriteLine("");
                                                     Console.WriteLine("Compressing text data....");
                                                     Console.WriteLine("");
 
@@ -111,7 +112,9 @@ namespace DoCTextTool.DoCTextTool
                                                     compressedDataFooter.BodyDataSize = (uint)(cmpbodySize + padNulls);
                                                     compressedDataFooter.CompressedDataCheckSum = cmpBodyReader.ComputeCheckSum();
 
+                                                    cmpBodyWriter.BaseStream.Position = cmpbodySize + padNulls;
                                                     cmpBodyStream.InsertEmptyBytes(8);
+
                                                     cmpBodyWriter.BaseStream.Position = cmpbodySize + padNulls;
                                                     cmpBodyWriter.Write(compressedDataFooter.BodyDataSize);
                                                     cmpBodyWriter.Write(compressedDataFooter.CompressedDataCheckSum);
@@ -134,7 +137,7 @@ namespace DoCTextTool.DoCTextTool
                                                     //File.WriteAllBytes("testDataHeader", headerStream.ToArray());
 
                                                     //cmpBodyStream.Seek(0, SeekOrigin.Begin);
-                                                    //File.WriteAllBytes("testCmpBodyData", cmpBodyStream.ToArray());
+                                                    //File.WriteAllBytes("testDataBodyCmp", cmpBodyStream.ToArray());
 
 
                                                     // Create the final output file

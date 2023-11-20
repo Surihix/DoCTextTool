@@ -29,11 +29,10 @@ namespace DoCTextTool.LineClasses
             {
                 using (var linesWriter = new BinaryWriter(linesStream))
                 {
-                    Console.WriteLine("Parsing lines....");
-                    Console.WriteLine("");
-
 
                     // Process lines and unknownIds
+                    Console.WriteLine("Parsing lines....");
+
                     var lineOffsets = new FileStructs.LineOffsets();
                     long bodySectionWritePos = 0;
                     lineOffsets.LineOffset = 0;
@@ -61,13 +60,11 @@ namespace DoCTextTool.LineClasses
                     }
 
 
-                    Console.WriteLine("Parsing line ids....");
-                    Console.WriteLine("");
-
                     // Process line ids
+                    Console.WriteLine("Parsing line ids....");
+
                     inFileReader.BaseStream.Seek(0, SeekOrigin.Begin);
                     _ = inFileReader.ReadLine();
-
                     bodySectionWritePos = 0;
 
                     for (int li = 0; li < lineCount; li++)
