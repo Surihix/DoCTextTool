@@ -13,8 +13,10 @@ namespace DoCTextTool.DoCTextTool
     {
         public static void ConvertProcess(string inTxtFile)
         {
-            Console.WriteLine("Converting text file data....");
+            Console.WriteLine($"Converting '{Path.GetFileName(inTxtFile)}' data....");
             Console.WriteLine("");
+
+            var outFile = Path.Combine(Path.GetDirectoryName(inTxtFile), $"{Path.GetFileNameWithoutExtension(inTxtFile)}.bin");
 
             using (var inFileStream = new FileStream(inTxtFile, FileMode.Open, FileAccess.Read))
             {
@@ -150,7 +152,6 @@ namespace DoCTextTool.DoCTextTool
 
                                                     // Create the final output file
                                                     // with this stream
-                                                    var outFile = Path.Combine(Path.GetDirectoryName(inTxtFile), $"{Path.GetFileNameWithoutExtension(inTxtFile)}.bin");
                                                     outFile.IfFileExistsDel();
 
                                                     using (var outFileStream = new FileStream(outFile, FileMode.Append, FileAccess.Write))
@@ -189,7 +190,7 @@ namespace DoCTextTool.DoCTextTool
                 }
             }
 
-            ExitType.Success.ExitProgram("Finished converting text data to bin file");
+            ExitType.Success.ExitProgram($"Finished converting text data to '{Path.GetFileName(outFile)}' file");
         }
     }
 }

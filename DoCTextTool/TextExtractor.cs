@@ -11,6 +11,9 @@ namespace DoCTextTool
     {
         public static void ExtractProcess(string inFile)
         {
+            Console.WriteLine($"Extracting text data from '{Path.GetFileName(inFile)}'....");
+            Console.WriteLine("");
+
             var outFile = Path.Combine(Path.GetDirectoryName(inFile), $"{Path.GetFileNameWithoutExtension(inFile)}.txt");
 
             using (var inFileStream = new FileStream(inFile, FileMode.Open, FileAccess.Read))
@@ -20,6 +23,7 @@ namespace DoCTextTool
                     // Check header
                     if (inFileStream.Length < 32)
                     {
+                        Console.WriteLine("");
                         ExitType.Error.ExitProgram("Header length is not valid");
                     }
 
@@ -31,6 +35,8 @@ namespace DoCTextTool
                     // appropriate exit message
                     if (headerValue != 10733845617377775685)
                     {
+                        Console.WriteLine("");
+
                         if (headerValue == 1)
                         {
                             ExitType.Error.ExitProgram("File is already decrypted. this may not be a valid Dirge Of Cerberus text file.");
@@ -49,7 +55,6 @@ namespace DoCTextTool
                             {
 
                                 // Header
-                                Console.WriteLine("");
                                 Console.WriteLine("Decrypting header section....");
                                 Console.WriteLine("");
 
@@ -102,7 +107,7 @@ namespace DoCTextTool
                                 LinesExtractor.ExtractLines(decryptedStream, isCompressed, (uint)decryptionBodySize, header.LineCount, outFile);
 
                                 Console.WriteLine("");
-                                ExitType.Success.ExitProgram("Finished extracting lines to text file");
+                                ExitType.Success.ExitProgram($"Finished extracting text data to '{Path.GetFileName(outFile)}' file");
                             }
                         }
                     }
