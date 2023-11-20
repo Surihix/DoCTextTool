@@ -15,6 +15,10 @@ namespace DoCTextTool.SupportClasses
                     exitType = "Error";
                     break;
 
+                case ExitType.Warning:
+                    exitType = "Warning";
+                    break;
+
                 case ExitType.Success:
                     exitType = "Success";
                     break;

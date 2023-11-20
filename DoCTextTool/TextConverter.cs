@@ -28,9 +28,9 @@ namespace DoCTextTool.DoCTextTool
                             ushort lineCount = 0;
                             LinesConverter.ConvertLines(inFileReader, bodyWriter, ref lineCount);
 
-                            Console.WriteLine("Generating bottom decrypted text....");
-                            Console.WriteLine("");
                             var decryptedFooterTxt = LinesConverter.GetLongestLine(inFileReader, lineCount);
+                            Console.WriteLine("Generated bottom decrypted text");
+                            Console.WriteLine("");
 
                             var bodySize = bodyStream.Length;
                             var padNulls = bodySize.CheckDivisibility(8);
@@ -47,6 +47,8 @@ namespace DoCTextTool.DoCTextTool
                                 {
                                     using (var headerWriter = new BinaryWriter(headerStream))
                                     {
+                                        // Create the base header
+                                        // offsets
                                         var header = new FileStructs.Header();
                                         header.SeedValueA = 1;
                                         header.SeedValueB = 0;
@@ -75,7 +77,7 @@ namespace DoCTextTool.DoCTextTool
                                         //bodyStream.Seek(0, SeekOrigin.Begin);
                                         //File.WriteAllBytes("testDataBody", bodyStream.ToArray());
 
-                                        //File.WriteAllBytes("testDataFooter", decryptedFooterTxt);
+                                        //File.WriteAllBytes("testDataFooterTxt", decryptedFooterTxt);
 
 
                                         // Prepare a stream for holding the
@@ -87,7 +89,6 @@ namespace DoCTextTool.DoCTextTool
                                                 using (var cmpBodyWriter = new BinaryWriter(cmpBodyStream))
                                                 {
                                                     // Compress body section
-                                                    Console.WriteLine("");
                                                     Console.WriteLine("Compressing text data....");
                                                     Console.WriteLine("");
 
@@ -99,6 +100,9 @@ namespace DoCTextTool.DoCTextTool
                                                         zlibCmpStream.CopyTo(cmpBodyStream);
                                                     }
 
+                                                    // Pad null byte to make the 
+                                                    // compressed body divisible
+                                                    // by 8
                                                     var cmpbodySize = cmpBodyStream.Length;
                                                     padNulls = cmpbodySize.CheckDivisibility(8);
 
@@ -108,20 +112,24 @@ namespace DoCTextTool.DoCTextTool
                                                         cmpBodyStream.InsertEmptyBytes(padNulls);
                                                     }
 
-                                                    var compressedDataFooter = new FileStructs.CompressedBodyFooter();
-                                                    compressedDataFooter.BodyDataSize = (uint)(cmpbodySize + padNulls);
-                                                    compressedDataFooter.CompressedDataCheckSum = cmpBodyReader.ComputeCheckSum();
+                                                    // Insert footer bytes for the
+                                                    // body section and update these
+                                                    // footer offsets accordingly
+                                                    var bodyFooter = new FileStructs.BodyFooter();
+                                                    bodyFooter.BodyDataSize = (uint)(cmpbodySize + padNulls);
+                                                    bodyFooter.CompressedDataCheckSum = cmpBodyReader.ComputeCheckSum();
 
                                                     cmpBodyWriter.BaseStream.Position = cmpbodySize + padNulls;
                                                     cmpBodyStream.InsertEmptyBytes(8);
 
                                                     cmpBodyWriter.BaseStream.Position = cmpbodySize + padNulls;
-                                                    cmpBodyWriter.Write(compressedDataFooter.BodyDataSize);
-                                                    cmpBodyWriter.Write(compressedDataFooter.CompressedDataCheckSum);
+                                                    cmpBodyWriter.Write(bodyFooter.BodyDataSize);
+                                                    cmpBodyWriter.Write(bodyFooter.CompressedDataCheckSum);
 
 
-                                                    // Final header offsets update
-                                                    header.TotalFileSize = 32 + compressedDataFooter.BodyDataSize + 8 + header.DecryptedFooterTxtSize;
+                                                    // Do one final update for the header
+                                                    // offsets
+                                                    header.TotalFileSize = 32 + bodyFooter.BodyDataSize + 8 + header.DecryptedFooterTxtSize;
                                                     headerWriter.BaseStream.Position = 20;
                                                     headerWriter.Write(header.TotalFileSize);
 

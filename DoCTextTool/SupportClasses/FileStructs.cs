@@ -16,7 +16,7 @@
             public uint HeaderCheckSum;
         }
 
-        public struct CompressedBodyFooter
+        public struct BodyFooter
         {
             public uint BodyDataSize;
             public uint CompressedDataCheckSum;
