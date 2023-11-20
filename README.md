@@ -3,7 +3,7 @@ A small tool that allows you to extract and convert Dirge of Cerberus's text fil
 
 The program should be launched from a command prompt terminal with these following argument switches along with the input file:
 <br>``-e`` Extracts text data from the game's propertiary text files into a general text file
-<br>``-c`` Converts the text file data back into game's propertiary text file format
+<br>``-c`` Converts the general text file data back into game's propertiary text file format
 
 Commandline usage examples:
 <br>``DoCTextTool.exe -e "string_us.bin" ``
