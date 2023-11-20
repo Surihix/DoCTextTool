@@ -61,7 +61,7 @@ namespace DoCTextTool
 
                                 decryptedStreamBinReader.BaseStream.Position = 11;
                                 header.DcmpFlag = decryptedStreamBinReader.ReadByte();
-                                header.DecryptBtmTxtSize = decryptedStreamBinReader.ReadUInt32();
+                                header.DecryptedFooterTxtSize = decryptedStreamBinReader.ReadUInt32();
 
                                 var isCompressed = true;
                                 if (header.DcmpFlag == 0)
@@ -70,7 +70,7 @@ namespace DoCTextTool
                                 }
 
                                 Console.WriteLine($"Line count: {header.LineCount}");
-                                Console.WriteLine($"Decrypted bottom text Size: {header.DecryptBtmTxtSize}");
+                                Console.WriteLine($"Decrypted bottom text Size: {header.DecryptedFooterTxtSize}");
                                 Console.WriteLine($"Compression Flag: {isCompressed}");
 
 
@@ -78,7 +78,7 @@ namespace DoCTextTool
                                 Console.WriteLine("");
                                 Console.WriteLine("Decrypting body section....");
 
-                                var decryptionBodySize = new FileInfo(inFile).Length - header.DecryptBtmTxtSize - 32;
+                                var decryptionBodySize = new FileInfo(inFile).Length - header.DecryptedFooterTxtSize - 32;
                                 var blockCount = (uint)decryptionBodySize / 8;
 
                                 // Check if the length of the

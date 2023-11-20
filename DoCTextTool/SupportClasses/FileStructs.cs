@@ -9,16 +9,16 @@
             public ushort LineCount;
             public byte Reserved;
             public byte DcmpFlag;
-            public uint DecryptBtmTxtSize;
+            public uint DecryptedFooterTxtSize;
             public uint DcmpBodySize;
             public uint TotalFileSize;
             public uint HeaderSize;
             public uint HeaderCheckSum;
         }
 
-        public struct CompressedDataFooter
+        public struct CompressedBodyFooter
         {
-            public uint CompressedDataSize;
+            public uint BodyDataSize;
             public uint CompressedDataCheckSum;
         }
 

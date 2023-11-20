@@ -1,5 +1,7 @@
-﻿using DoCTextTool.LineClasses;
+﻿using DoCTextTool.CryptographyClasses;
+using DoCTextTool.LineClasses;
 using DoCTextTool.SupportClasses;
+using Ionic.Zlib;
 using System;
 using System.IO;
 using System.Text;
@@ -25,51 +27,158 @@ namespace DoCTextTool.DoCTextTool
                         {
                             ushort lineCount = 0;
                             LinesConverter.ConvertLines(inFileReader, bodyWriter, ref lineCount);
-                            var decryptBtmTxt = LinesConverter.LargestLineData(inFileReader, lineCount);
 
+                            Console.WriteLine("Generating bottom decrypted text....");
+                            Console.WriteLine("");
+                            var decryptedFooterTxt = LinesConverter.GetLongestLine(inFileReader, lineCount);
+
+                            var bodySize = bodyStream.Length;
+                            var padNulls = bodySize.CheckDivisibility(8);
+
+                            if (padNulls > 0)
+                            {
+                                bodyStream.Seek(bodySize, SeekOrigin.Begin);
+                                bodyStream.InsertEmptyBytes(padNulls);
+                            }
 
                             using (var headerStream = new MemoryStream())
                             {
-                                using (var headerWriter = new BinaryWriter(headerStream))
+                                using (var headerReader = new BinaryReader(headerStream))
                                 {
-                                    var header = new FileStructs.Header();
-                                    header.SeedValueA = 1;
-                                    header.SeedValueB = 0;
+                                    using (var headerWriter = new BinaryWriter(headerStream))
+                                    {
+                                        var header = new FileStructs.Header();
+                                        header.SeedValueA = 1;
+                                        header.SeedValueB = 0;
 
-                                    headerStream.Seek(0, SeekOrigin.Begin);
-                                    headerStream.InsertEmptyBytes(32);
+                                        headerStream.Seek(0, SeekOrigin.Begin);
+                                        headerStream.InsertEmptyBytes(32);
 
-                                    header.LineCount = lineCount;
-                                    header.Reserved = 0;
-                                    header.DcmpFlag = 1;
+                                        header.LineCount = lineCount;
+                                        header.Reserved = 0;
+                                        header.DcmpFlag = 1;
 
-                                    header.DecryptBtmTxtSize = (uint)decryptBtmTxt.Length;
-                                    header.DcmpBodySize = (uint)bodyStream.Length;
-                                    header.HeaderSize = 24;
+                                        header.DecryptedFooterTxtSize = (uint)decryptedFooterTxt.Length;
+                                        header.DcmpBodySize = (uint)bodyStream.Length;
 
-                                    headerWriter.BaseStream.Position = 0;
-                                    headerWriter.Write(header.SeedValueA);
-                                    headerWriter.Write(header.SeedValueB);
-                                    headerWriter.Write(header.LineCount);
-                                    headerWriter.Write(header.Reserved);
-                                    headerWriter.Write(header.DcmpFlag);
-                                    headerWriter.Write(header.DecryptBtmTxtSize);
-                                    headerWriter.Write(header.DcmpBodySize);
+                                        headerWriter.BaseStream.Position = 0;
+                                        headerWriter.Write(header.SeedValueA);
+                                        headerWriter.Write(header.SeedValueB);
+                                        headerWriter.Write(header.LineCount);
+                                        headerWriter.Write(header.Reserved);
+                                        headerWriter.Write(header.DcmpFlag);
+                                        headerWriter.Write(header.DecryptedFooterTxtSize);
+                                        headerWriter.Write(header.DcmpBodySize);
 
-                                    headerWriter.BaseStream.Position = 24;
-                                    headerWriter.Write(header.HeaderSize);
 
-                                    // Debugging purpose
+                                        // Debugging purpose
+                                        //bodyStream.Seek(0, SeekOrigin.Begin);
+                                        //File.WriteAllBytes("testDataBody", bodyStream.ToArray());
+
+                                        //File.WriteAllBytes("testDataFooter", decryptedFooterTxt);
+
+
+                                        // Prepare a stream for holding the
+                                        // compressed body section
+                                        using (var cmpBodyStream = new MemoryStream())
+                                        {
+                                            using (var cmpBodyReader = new BinaryReader(cmpBodyStream))
+                                            {
+                                                using (var cmpBodyWriter = new BinaryWriter(cmpBodyStream))
+                                                {
+                                                    // Compress body section
+                                                    Console.WriteLine("Compressing text data....");
+                                                    Console.WriteLine("");
+
+                                                    bodyStream.Seek(0, SeekOrigin.Begin);
+
+                                                    using (var zlibCmpStream = new ZlibStream(bodyStream, CompressionMode.Compress, CompressionLevel.Level5, true))
+                                                    {
+                                                        cmpBodyWriter.Seek(0, SeekOrigin.Begin);
+                                                        zlibCmpStream.CopyTo(cmpBodyStream);
+                                                    }
+
+                                                    var cmpbodySize = cmpBodyStream.Length;
+                                                    padNulls = cmpbodySize.CheckDivisibility(8);
+
+                                                    if (padNulls > 0)
+                                                    {
+                                                        cmpBodyStream.Seek(cmpbodySize, SeekOrigin.Begin);
+                                                        cmpBodyStream.InsertEmptyBytes(padNulls);
+                                                    }
+
+                                                    var compressedDataFooter = new FileStructs.CompressedBodyFooter();
+                                                    compressedDataFooter.BodyDataSize = (uint)(cmpbodySize + padNulls);
+                                                    compressedDataFooter.CompressedDataCheckSum = cmpBodyReader.ComputeCheckSum();
+
+                                                    cmpBodyStream.InsertEmptyBytes(8);
+                                                    cmpBodyWriter.BaseStream.Position = cmpbodySize + padNulls;
+                                                    cmpBodyWriter.Write(compressedDataFooter.BodyDataSize);
+                                                    cmpBodyWriter.Write(compressedDataFooter.CompressedDataCheckSum);
+
+
+                                                    // Final header offsets update
+                                                    header.TotalFileSize = 32 + compressedDataFooter.BodyDataSize + 8 + header.DecryptedFooterTxtSize;
+                                                    headerWriter.BaseStream.Position = 20;
+                                                    headerWriter.Write(header.TotalFileSize);
+
+                                                    header.HeaderCheckSum = headerReader.ComputeCheckSum();
+                                                    header.HeaderSize = 24;
+                                                    headerWriter.BaseStream.Position = 24;
+                                                    headerWriter.Write(header.HeaderSize);
+                                                    headerWriter.Write(header.HeaderCheckSum);
+
+
+                                                    // Debugging purpose
+                                                    //headerStream.Seek(0, SeekOrigin.Begin);
+                                                    //File.WriteAllBytes("testDataHeader", headerStream.ToArray());
+
+                                                    //cmpBodyStream.Seek(0, SeekOrigin.Begin);
+                                                    //File.WriteAllBytes("testCmpBodyData", cmpBodyStream.ToArray());
+
+
+                                                    // Create the final output file
+                                                    // with this stream
+                                                    var outFile = Path.Combine(Path.GetDirectoryName(inTxtFile), $"{Path.GetFileNameWithoutExtension(inTxtFile)}.bin");
+                                                    outFile.IfFileExistsDel();
+
+                                                    using (var outFileStream = new FileStream(outFile, FileMode.Append, FileAccess.Write))
+                                                    {
+                                                        using (var outFileWriter = new BinaryWriter(outFileStream))
+                                                        {
+                                                            // Encrypt header section
+                                                            Console.WriteLine("Encrypting header section....");
+                                                            Console.WriteLine("");
+
+                                                            headerStream.Seek(0, SeekOrigin.Begin);
+                                                            Encryption.EncryptSection(KeyArrays.KeyblocksHeader, 4, 0, 0, headerReader, outFileWriter);
+
+
+                                                            // Encrypt body section
+                                                            Console.WriteLine("Encrypting body section....");
+                                                            Console.WriteLine("");
+
+                                                            cmpBodyStream.Seek(0, SeekOrigin.Begin);
+                                                            var blockCount = (uint)cmpBodyStream.Length / 8;
+                                                            Encryption.EncryptSection(KeyArrays.KeyBlocksMainBody, blockCount, 0, 32, cmpBodyReader, outFileWriter);
+
+
+                                                            // Copy the decrypted bottom text
+                                                            outFileWriter.Write(decryptedFooterTxt);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
-
-                        var outFile = Path.Combine(Path.GetDirectoryName(inTxtFile), $"{Path.GetFileNameWithoutExtension(inTxtFile)}.bin");
                     }
                 }
             }
 
-            ExitType.Success.ExitProgram("Finished converting text data to valid Dirge Of Cerberus text file");
+            ExitType.Success.ExitProgram("Finished converting text data to bin file");
         }
     }
 }

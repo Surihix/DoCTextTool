@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace DoCTextTool.CryptographyClasses
 {
@@ -115,6 +116,31 @@ namespace DoCTextTool.CryptographyClasses
             }
 
             return byteToEncrypt;
+        }
+
+
+        public static uint ComputeCheckSum(this BinaryReader readerName)
+        {
+            uint blocks = (uint)readerName.BaseStream.Length / 4;
+            uint readPos = 0;
+            uint chkSumVal = 0;
+            uint totalChkSum = 0;
+
+            for (int i = 0; i < blocks; i++)
+            {
+                readerName.BaseStream.Position = readPos;
+                var currentVal = readerName.ReadByte();
+
+                totalChkSum = chkSumVal + currentVal;
+
+                // Debugging purpose
+                //Console.WriteLine(chkSumVal + " " + currentVal + " = " + totalChkSum);
+
+                chkSumVal = totalChkSum;
+                readPos += 4;
+            }
+
+            return totalChkSum;
         }
     }
 }

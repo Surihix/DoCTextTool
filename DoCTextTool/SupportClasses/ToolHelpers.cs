@@ -76,5 +76,19 @@ namespace DoCTextTool.SupportClasses
                 inStream.WriteByte(0);
             }
         }
+
+        public static long CheckDivisibility(this long valueToCheck, int divisibilityValue)
+        {
+            long padNulls = 0;
+
+            if (valueToCheck % divisibilityValue != 0)
+            {
+                var remainder = valueToCheck % divisibilityValue;
+                var increaseBytes = divisibilityValue - remainder;
+                var newPos = valueToCheck + increaseBytes;
+                padNulls = newPos - valueToCheck;
+            }
+            return padNulls;
+        }
     }
 }

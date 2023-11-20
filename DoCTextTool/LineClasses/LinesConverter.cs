@@ -1,5 +1,6 @@
 ﻿using DoCTextTool.SupportClasses;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using static DoCTextTool.SupportClasses.ToolHelpers;
@@ -90,12 +91,10 @@ namespace DoCTextTool.LineClasses
                     // Copy processed lines and
                     // line id streams to body
                     // stream
+                    var processedDataStartPos = bodyWriter.BaseStream.Length;
                     linesStream.Seek(0, SeekOrigin.Begin);
-                    bodyWriter.BaseStream.Seek(bodyWriter.BaseStream.Length, SeekOrigin.Begin);
+                    bodyWriter.BaseStream.Seek(processedDataStartPos, SeekOrigin.Begin);
                     linesStream.CopyTo(bodyWriter.BaseStream);
-
-
-                    // Debugging purpose
                 }
             }
         }
@@ -109,20 +108,47 @@ namespace DoCTextTool.LineClasses
         }
 
 
-        public static byte[] LargestLineData(StreamReader inFileReader, ushort lineCount)
+        public static byte[] GetLongestLine(StreamReader inFileReader, ushort lineCount)
         {
             inFileReader.BaseStream.Seek(0, SeekOrigin.Begin);
             _ = inFileReader.ReadLine();
 
-            byte[] largestLine = new byte[] { };
-            var prevSize = 0;
-            var currentSize = 0;
+            byte[] longestLineArray = new byte[] { };
+            var prevLargestSize = 0;
 
-            for (int lil = 0; lil < lineCount; lil++)
+            for (int i = 0; i < lineCount; i++)
             {
+                var currentLineIdData = inFileReader.ReadLine().Split(new string[] { " || " }, StringSplitOptions.None);
+                var currentLine = EncodingShift(currentLineIdData[2]);
 
+                var currentSize = currentLine.Length;
+
+                if (currentSize >= prevLargestSize)
+                {
+                    prevLargestSize = currentSize;
+                    longestLineArray = currentLine;
+                }
             }
-            return largestLine;
+
+            var padNulls = ((long)prevLargestSize).CheckDivisibility(8);
+
+            if (padNulls > 0)
+            {
+                var adjustedList = new List<byte>();
+                foreach (var b in longestLineArray)
+                {
+                    adjustedList.Add(b);
+                }
+
+                for (int a = 0; a < padNulls; a++)
+                {
+                    adjustedList.Add(0);
+                }
+
+                longestLineArray = adjustedList.ToArray();
+            }
+
+            return longestLineArray;
         }
     }
 }
