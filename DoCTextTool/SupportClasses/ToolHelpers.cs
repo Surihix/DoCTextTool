@@ -68,5 +68,13 @@ namespace DoCTextTool.SupportClasses
 
             return byteList;
         }
+
+        public static void InsertEmptyBytes(this Stream inStream, long padAmount)
+        {
+            for (int p = 0; p < padAmount; p++)
+            {
+                inStream.WriteByte(0);
+            }
+        }
     }
 }
