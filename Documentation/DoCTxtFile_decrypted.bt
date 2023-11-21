@@ -1,0 +1,74 @@
+//------------------------------------------------
+//--- 010 Editor v12.0.1 Binary Template
+//
+//      File: DoCTxtFile_decrypted.bt
+//   Authors: Surihix
+//   Version: 1.0
+//   Purpose: Parse Dirge Of Cerberus text files
+//  Category: Dirge Cerberus text files
+// File Mask: *.bin
+//  ID Bytes: 01 00 00 00 00 00 00 00
+//   History: 
+//   1.0   2023-11-12 Surihix: Initial version
+//------------------------------------------------
+
+LittleEndian();
+
+
+typedef struct HEADER
+{
+    uint seedValueA<name="Seed Value A">;
+    uint seedValueB<name="Seed Value B">;
+    ushort lineCount<name="Line Count">;
+    ubyte reserved<name="Reserved (always 0)">;
+    ubyte cmpFlag<name="Compression Flag (1 = compressed and 0 = decompressed)">;
+    uint dcryptdTxtSniptSize<name="Decrypted Text Snippet Size">;
+    uint dcmpBodySection<name="Decompressed Body Section size">;
+    uint fileSize<name="File Size">;    
+}Header;
+
+
+typedef struct HEADERFOOTER
+{
+    uint headerSize<name="Header Section size (always 24)">;
+    uint headerChecksumValue<name="Header Checksum", comment="Sum of all 4th byte values from the 0th byte">;
+}HeaderFooter;
+
+
+typedef struct BODYFOOTER
+{
+    uint bodySize<name="Body Section size">;
+    uint bodyChecksumValue<name="Body Checksum", comment="Sum of all 4th byte values from the body's 0th byte">;
+}BodyFooter;
+
+
+struct FILE
+{
+    uint64 magic<hidden=true>;   
+    Assert(magic == 10733845617377775685 || magic == 1);
+
+    if(magic == 10733845617377775685)
+    {
+       Printf("Warning: File is encrypted.\nThe template won't show any results");
+    }
+
+    if(magic == 1) 
+    {
+       FSeek(0);
+       Header headerOffsets<name="Header Section">;
+       HeaderFooter headerFooterOffsets<name="Header Footer Section">;
+       
+       local uint64 fileSize = FileSize();
+       local uint64 dcryptdTxtSnipOffset = fileSize - headerOffsets.dcryptdTxtSniptSize;
+       local uint64 bodySize = (dcryptdTxtSnipOffset - 32) - 8;
+       
+       FSeek(32);
+       char bodyData[bodySize]<name="Body Section">;
+
+       FSeek(dcryptdTxtSnipOffset - 8);
+       BodyFooter bodyFooterOffsets<name="Body Footer Section">;
+
+       FSeek(dcryptdTxtSnipOffset);
+       char dcryptdTxtSnip[headerOffsets.dcryptdTxtSniptSize]<name="Decrypted Text Snippet">;              
+    }
+}File<open=true, name="DoCTextFile">;
