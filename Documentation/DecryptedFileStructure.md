@@ -17,7 +17,7 @@
 | Offset | Size | Type | Description |
 | --- | --- | --- | --- |
 | 0x18 | 0x4 | UInt32 | Header Section size, always 24 |
-| 0x1C | 0x4 | UInt32 | Header [Checksum](https://github.com/Surihix/DoCTextTool/master/Documentation/DecryptedFileStructure.md#checksum) |
+| 0x1C | 0x4 | UInt32 | Header [Checksum](https://github.com/Surihix/DoCTextTool/blob/master/Documentation/DecryptedFileStructure.md#checksum) |
 
 <br>
 
@@ -25,7 +25,7 @@
 | Offset | Size | Type | Description |
 | --- | --- | --- | --- |
 | 0x18 | 0x4 | UInt32 | Body Section size |
-| 0x1C | 0x4 | UInt32 | Body [Checksum](https://github.com/Surihix/DoCTextTool/master/Documentation/DecryptedFileStructure.md#checksum) |
+| 0x1C | 0x4 | UInt32 | Body [Checksum](https://github.com/Surihix/DoCTextTool/blob/master/Documentation/DecryptedFileStructure.md#checksum) |
 
 <br>
 
