@@ -9,7 +9,7 @@
 | 0x8 | 0x2 | UInt16 | Line Count |
 | 0xA | 0x1 | UInt8 | Reserved, always null |
 | 0xB | 0x1 | UInt8 | Compression Flag |
-| 0xC | 0x4 | UInt32 | [Decrypted text snippet](https://github.com/Surihix/DoCTextTool/master/Documentation/DecryptedFileStructure.md#decrypted-text-snippet) size |
+| 0xC | 0x4 | UInt32 | Decrypted text snippet size |
 | 0x10 | 0x4 | UInt32 | Decompressed Body Section size |
 | 0x14 | 0x4 | UInt32 | File size |
 
@@ -28,7 +28,5 @@
 | 0x1C | 0x4 | UInt32 | Body [Checksum](https://github.com/Surihix/DoCTextTool/master/Documentation/DecryptedFileStructure.md#checksum) |
 
 <br>
-
-#### Decrypted text snippet
 
 #### Checksum
