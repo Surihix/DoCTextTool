@@ -1,5 +1,5 @@
 # DoCTextTool
-This small tool allows you to decrypt, encrypt, extract and re convert Dirge of Cerberus game's text bin files. refer to the page linked below for 
+This small tool allows you to decrypt, encrypt, extract and re convert Dirge of Cerberus game's text bin files.
 
 Instructions on how to use this tool can be found here: 
 <br>https://github.com/Surihix/DoCTextTool/blob/master/Docs/ToolUsage.md
