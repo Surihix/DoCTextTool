@@ -56,7 +56,6 @@ namespace DoCTextTool.CryptoClasses
             blockByteCounter_Fval |= blockByteCounter_Dval;
         }
 
-
         public static void KeyBlockSetup(byte[] currentKeyBlock, uint keyBlockOffset, ref uint keyBlockActiveLowerValue, 
             ref uint keyBlockActiveHigherValue)
         {
@@ -71,7 +70,6 @@ namespace DoCTextTool.CryptoClasses
             keyBlockActiveLowerValue = keyBlockActiveLowerArray.ArrayToUIntHexNum();
             keyBlockActiveHigherValue = keyBlockActiveHigherArray.ArrayToUIntHexNum();
         }
-
 
         public static void SpecialKeySetup(ref uint carryFlag, uint blockByteCounter_Eval, uint blockByteCounter_Fval, 
             ref long specialKey1, ref long specialKey2)

@@ -121,11 +121,9 @@ namespace DoCTextTool.CryptoClasses
                         decryptedByteHigherArray[1].ToString("X2") + " " + decryptedByteHigherArray[2].ToString("X2") + " " +
                         decryptedByteHigherArray[3].ToString("X2") + " ");
 
-                    Console.Write(decryptedByteLowerArray[0].ToString("X2") + " " +
+                    Console.WriteLine(decryptedByteLowerArray[0].ToString("X2") + " " +
                         decryptedByteLowerArray[1].ToString("X2") + " " + decryptedByteLowerArray[2].ToString("X2") + " " +
                         decryptedByteLowerArray[3].ToString("X2"));
-
-                    Console.WriteLine("");
                 }
 
 

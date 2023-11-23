@@ -66,10 +66,7 @@ namespace DoCTextTool
                                 var decryptionBodySize = new FileInfo(inFile).Length - header.DecryptedFooterTxtSize - 32;
                                 var blockCount = (uint)decryptionBodySize / 8;
 
-                                // Check if the length of the
-                                // body section to decrypt is
-                                // valid
-                                decryptionBodySize.LengthCheck();
+                                decryptionBodySize.CryptoLengthCheck();
 
                                 Decryption.DecryptSection(KeyArrays.KeyBlocksMainBody, blockCount, 32, 32, inFileReader, decryptedStreamBinWriter, false);
 

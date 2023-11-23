@@ -6,11 +6,11 @@ namespace DoCTextTool.CryptoClasses
 {
     internal static class CryptoFunctions
     {
-        public static void LengthCheck(this long decryptionBodySize)
+        public static void CryptoLengthCheck(this long bodySize)
         {
-            if (decryptionBodySize % 8 != 0)
+            if (bodySize % 8 != 0)
             {
-                ExitType.Error.ExitProgram("Length of the body to decrypt is not valid");
+                ExitType.Error.ExitProgram("Length of the body to decrypt/encrypt is not valid");
             }
         }
 

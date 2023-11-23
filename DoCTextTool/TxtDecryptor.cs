@@ -9,9 +9,7 @@ namespace DoCTextTool
     {
         public static void DecryptProcess(string inFile)
         {
-            Console.WriteLine($"Decrypting '{Path.GetFileName(inFile)}' data....");
-            Console.WriteLine("");
-
+            var inFileName = Path.GetFileName(inFile);
             var outFile = Path.Combine(Path.GetDirectoryName(inFile), $"{Path.GetFileNameWithoutExtension(inFile)}.dec");
 
             using (var inFileStream = new FileStream(inFile, FileMode.Open, FileAccess.Read))
@@ -42,10 +40,7 @@ namespace DoCTextTool
                                 var decryptionBodySize = new FileInfo(inFile).Length - decryptedFooterTxtSize - 32;
                                 var blockCount = (uint)decryptionBodySize / 8;
 
-                                // Check if the length of the
-                                // body section to decrypt is
-                                // valid
-                                decryptionBodySize.LengthCheck();
+                                decryptionBodySize.CryptoLengthCheck();
 
                                 Decryption.DecryptSection(KeyArrays.KeyBlocksMainBody, blockCount, 32, 32, inFileReader, decryptedStreamBinWriter, true);
                                 Console.WriteLine("");
@@ -67,8 +62,9 @@ namespace DoCTextTool
             }
 
             File.Delete(inFile);
-            File.Move(outFile, Path.Combine(Path.GetDirectoryName(outFile), $"{Path.GetFileNameWithoutExtension(outFile)}.bin"));
-            ExitType.Success.ExitProgram($"Finished decrypting data");
+            File.Move(outFile, Path.Combine(Path.GetDirectoryName(outFile), inFileName));
+            
+            ExitType.Success.ExitProgram($"Finished decrypting file");
         }
     }
 }

@@ -127,7 +127,7 @@ namespace DoCTextTool.LineClasses
                 }
             }
 
-            var padNulls = ((long)prevLargestSize).CheckDivisibility(8);
+            var padNulls = ((long)prevLargestSize).PadCheckDivisibility(8);
 
             if (padNulls > 0)
             {

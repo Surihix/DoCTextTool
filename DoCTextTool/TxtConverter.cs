@@ -35,7 +35,7 @@ namespace DoCTextTool
                             Console.WriteLine("");
 
                             var bodySize = bodyStream.Length;
-                            var padNulls = bodySize.CheckDivisibility(8);
+                            var padNulls = bodySize.PadCheckDivisibility(8);
 
                             if (padNulls > 0)
                             {
@@ -106,7 +106,7 @@ namespace DoCTextTool
                                                     // compressed body divisible
                                                     // by 8
                                                     var cmpbodySize = cmpBodyStream.Length;
-                                                    padNulls = cmpbodySize.CheckDivisibility(8);
+                                                    padNulls = cmpbodySize.PadCheckDivisibility(8);
 
                                                     if (padNulls > 0)
                                                     {

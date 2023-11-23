@@ -61,11 +61,11 @@ namespace DoCTextTool.SupportClasses
                     switch (isCryptProcess)
                     {
                         case true:
-                            ExitType.Error.ExitProgram("File is already decrypted.");
+                            ExitType.Error.ExitProgram("File is already decrypted");
                             break;
 
                         case false:
-                            ExitType.Error.ExitProgram("File is already decrypted. Ensure that the text bin file is encrypted before extracting it.");
+                            ExitType.Error.ExitProgram("File is decrypted. ensure that the text bin file is encrypted before extracting it.");
                             break;
                     }         
                 }
@@ -113,7 +113,7 @@ namespace DoCTextTool.SupportClasses
             }
         }
 
-        public static long CheckDivisibility(this long valueToCheck, int divisibilityValue)
+        public static long PadCheckDivisibility(this long valueToCheck, int divisibilityValue)
         {
             long padNulls = 0;
 

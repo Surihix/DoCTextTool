@@ -44,7 +44,7 @@ namespace DoCTextTool
 
             var actionSwitchesMsgArray = new string[] 
             {
-                "Action Switches:", "-d = to decrypt", "-e = to encrypt", "-x = to extract", "-c = to convert"
+                "Action Switches:", "-d = To Decrypt", "-e = To Encrypt", "-x = To Extract", "-c = To Convert"
             };
 
             Console.Clear();
@@ -64,7 +64,7 @@ namespace DoCTextTool
             }
             else
             {
-                ExitType.Error.ExitProgram($"Invalid action switch specified\n\n{string.Join("\n", actionSwitchesMsgArray)}");
+                ExitType.Error.ExitProgram($"Invalid or no action switch specified\n\n{string.Join("\n", actionSwitchesMsgArray)}");
             }
 
             if (!File.Exists(args[1]))
