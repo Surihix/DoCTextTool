@@ -1,6 +1,6 @@
 First off majority of the credits goes to Shademp for researching this format and the decryption method.
 
-The text bin files are encrypted with a custom encryption scheme and would have to be decrypted to reveal usable data. these files are always encrypted by default and begin with this following header: 
+All of the text bin files are encrypted with a custom encryption scheme and would have to be decrypted to reveal usable data. these files begin with this following header: 
 <br>``45 90 AF F9 B7 47 F6 94``
 
 The file is split into three main parts. a [Header Section](https://github.com/Surihix/DoCTextTool/blob/master/Documentation/DecryptedFileStructure.md#header-section), a [Body Section](https://github.com/Surihix/DoCTextTool/blob/master/Documentation/DecryptedFileStructure.md#body-section) and a decrypted text snippet section at the end of the file. the header and the body sections each have its own footer sections which would contain the size and checksum values of its associated sections. 
