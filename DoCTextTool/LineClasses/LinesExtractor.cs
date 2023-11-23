@@ -18,7 +18,7 @@ namespace DoCTextTool.LineClasses
                 using (var outBinReader = new BinaryReader(outBinStream))
                 {
                     decryptedStream.Seek(0, SeekOrigin.Begin);
-                    decryptedStream.CopyInBuffers(outBinStream, 32);
+                    decryptedStream.ExCopyTo(outBinStream, 32);
 
                     decryptedStream.Seek(32, SeekOrigin.Begin);
 
@@ -32,7 +32,7 @@ namespace DoCTextTool.LineClasses
                             break;
 
                         case false:
-                            decryptedStream.CopyInBuffers(outBinStream, bodySize);
+                            decryptedStream.ExCopyTo(outBinStream, bodySize);
                             break;
                     }
 

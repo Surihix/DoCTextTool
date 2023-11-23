@@ -1,4 +1,4 @@
-﻿using DoCTextTool.CryptographyClasses;
+﻿using DoCTextTool.CryptoClasses;
 using DoCTextTool.LineClasses;
 using DoCTextTool.SupportClasses;
 using Ionic.Zlib;
@@ -9,7 +9,7 @@ using static DoCTextTool.SupportClasses.ToolHelpers;
 
 namespace DoCTextTool
 {
-    internal class TextConverter
+    internal class TxtConverter
     {
         public static void ConvertProcess(string inTxtFile)
         {

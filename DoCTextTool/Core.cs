@@ -36,12 +36,25 @@ namespace DoCTextTool
                 }
             }
 
+            var exampleMsgArray = new string[]
+            {
+                "Examples:", "DoCTextTool.exe -d \"string_us.bin\"", "DoCTextTool.exe -e \"string_us.bin\"", 
+                "DoCTextTool.exe -x \"string_us.bin\"", "DoCTextTool.exe -c \"string_us.txt\""
+            };
+
+            var actionSwitchesMsgArray = new string[] 
+            {
+                "Action Switches:", "-d = to decrypt", "-e = to encrypt", "-x = to extract", "-c = to convert"
+            };
+
             Console.Clear();
             Console.WriteLine("");
 
+
+            // Check launch arguments
             if (args.Length < 2)
             {
-                ExitType.Warning.ExitProgram($"Enough arguments not specified\n\n{ActionSwitchesMsg}\n\n{ExampleMsg}");
+                ExitType.Warning.ExitProgram($"Enough arguments not specified\n\n{string.Join("\n", actionSwitchesMsgArray)}\n\n{string.Join("\n", exampleMsgArray)}");
             }
 
             var toolActionSwitch = new ActionSwitches();
@@ -51,7 +64,7 @@ namespace DoCTextTool
             }
             else
             {
-                ExitType.Error.ExitProgram($"Invalid action switch specified\n\n{ActionSwitchesMsg}");
+                ExitType.Error.ExitProgram($"Invalid action switch specified\n\n{string.Join("\n", actionSwitchesMsgArray)}");
             }
 
             if (!File.Exists(args[1]))
@@ -64,19 +77,19 @@ namespace DoCTextTool
                 switch (toolActionSwitch)
                 {
                     case ActionSwitches.d:
-                        TextDecryptor.DecryptProcess(args[1]);
+                        TxtDecryptor.DecryptProcess(args[1]);
                         break;
 
                     case ActionSwitches.e:
-                        TextEncryptor.EncryptProcess(args[1]);
+                        TxtEncryptor.EncryptProcess(args[1]);
                         break;
 
                     case ActionSwitches.x:
-                        TextExtractor.ExtractProcess(args[1]);
+                        TxtExtractor.ExtractProcess(args[1]);
                         break;
 
                     case ActionSwitches.c:
-                        TextConverter.ConvertProcess(args[1]);
+                        TxtConverter.ConvertProcess(args[1]);
                         break;
                 }
             }

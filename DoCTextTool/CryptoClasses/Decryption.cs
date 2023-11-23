@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace DoCTextTool.CryptographyClasses
+namespace DoCTextTool.CryptoClasses
 {
     internal class Decryption
     {
@@ -24,7 +24,7 @@ namespace DoCTextTool.CryptographyClasses
                 uint keyBlockOffset = 0;
                 uint blockByteCounter_Eval = 0;
                 uint blockByteCounter_Fval = 0;
-                CryptographyHelpers.BlockByteCounterSetup(blockByteCounter, ref keyBlockOffset, ref blockByteCounter_Eval, ref blockByteCounter_Fval);
+                CryptoBase.BlockByteCounterSetup(blockByteCounter, ref keyBlockOffset, ref blockByteCounter_Eval, ref blockByteCounter_Fval);
 
 
                 // Shift all of the byte
@@ -66,14 +66,14 @@ namespace DoCTextTool.CryptographyClasses
                 // Setup KeyBlock variables
                 uint keyBlockActiveLowerValue = 0;
                 uint keyBlockActiveHigherValue = 0;
-                CryptographyHelpers.KeyBlockSetup(currentKeyBlock, keyBlockOffset, ref keyBlockActiveLowerValue, ref keyBlockActiveHigherValue);
+                CryptoBase.KeyBlockSetup(currentKeyBlock, keyBlockOffset, ref keyBlockActiveLowerValue, ref keyBlockActiveHigherValue);
 
 
                 // Setup SpecialKey variables
                 uint carryFlag = 0;
                 long specialKey1 = 0;
                 long specialKey2 = 0;
-                CryptographyHelpers.SpecialKeySetup(ref carryFlag, blockByteCounter_Eval, blockByteCounter_Fval, ref specialKey1, ref specialKey2);
+                CryptoBase.SpecialKeySetup(ref carryFlag, blockByteCounter_Eval, blockByteCounter_Fval, ref specialKey1, ref specialKey2);
 
 
                 // Process bytes with the SpecialKey

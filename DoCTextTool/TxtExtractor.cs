@@ -1,4 +1,4 @@
-﻿using DoCTextTool.CryptographyClasses;
+﻿using DoCTextTool.CryptoClasses;
 using DoCTextTool.LineClasses;
 using DoCTextTool.SupportClasses;
 using System;
@@ -7,7 +7,7 @@ using static DoCTextTool.SupportClasses.ToolHelpers;
 
 namespace DoCTextTool
 {
-    internal class TextExtractor
+    internal class TxtExtractor
     {
         public static void ExtractProcess(string inFile)
         {
@@ -20,32 +20,12 @@ namespace DoCTextTool
             {
                 using (var inFileReader = new BinaryReader(inFileStream))
                 {
-                    // Check header
-                    if (inFileStream.Length < 32)
-                    {
-                        Console.WriteLine("");
-                        ExitType.Error.ExitProgram("Header length is not valid");
-                    }
+                    inFileStream.Length.HeaderLengthCheck();
 
                     inFileReader.BaseStream.Position = 0;
                     var headerValue = inFileReader.ReadUInt64();
 
-                    // If its not encrypted
-                    // header, then throw the
-                    // appropriate exit message
-                    if (headerValue != 10733845617377775685)
-                    {
-                        Console.WriteLine("");
-
-                        if (headerValue == 1)
-                        {
-                            ExitType.Error.ExitProgram("File is already decrypted. Ensure that the text bin file is encrypted before extracting it.");
-                        }
-                        else
-                        {
-                            ExitType.Error.ExitProgram("This is not a valid Dirge Of Cerberus text file.");
-                        }
-                    }
+                    headerValue.HeaderValueCheck(false);
 
                     using (var decryptedStream = new MemoryStream())
                     {

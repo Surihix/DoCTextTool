@@ -2,9 +2,9 @@
 using System.IO;
 using static DoCTextTool.SupportClasses.ToolHelpers;
 
-namespace DoCTextTool.CryptographyClasses
+namespace DoCTextTool.CryptoClasses
 {
-    internal static class CryptographyFunctions
+    internal static class CryptoFunctions
     {
         public static void LengthCheck(this long decryptionBodySize)
         {
@@ -14,14 +14,12 @@ namespace DoCTextTool.CryptographyClasses
             }
         }
 
-
         public static uint XOR(this uint leftVal, uint rightVal)
         {
             var computedXOR = leftVal ^ rightVal;
 
             return Convert.ToUInt32(computedXOR.ToString("X2"), 16);
         }
-
 
         public static uint LoopAByte(this uint decryptedByte, byte[] currentKeyBlock, uint currentKeyBlockOffset)
         {
@@ -50,7 +48,6 @@ namespace DoCTextTool.CryptographyClasses
             return decryptedByte;
         }
 
-
         public static byte[] LongHexToArray(this long value)
         {
             var computedHex = value.ToString("X16");
@@ -67,7 +64,6 @@ namespace DoCTextTool.CryptographyClasses
             return hexNumArray;
         }
 
-
         public static byte[] LongHexToUIntHexArray(this long value)
         {
             var computedLongHex = value.ToString("X16");
@@ -80,7 +76,6 @@ namespace DoCTextTool.CryptographyClasses
             return hexNumArray;
         }
 
-
         public static uint ArrayToUIntHexNum(this byte[] byteArray)
         {
             var hexValue = byteArray[0].ToString("X2") + "" + byteArray[1].ToString("X2") + "" +
@@ -88,7 +83,6 @@ namespace DoCTextTool.CryptographyClasses
 
             return Convert.ToUInt32(hexValue, 16);
         }
-
 
         public static long ArrayToLongHexNum(this byte[] byteArray)
         {
@@ -98,7 +92,6 @@ namespace DoCTextTool.CryptographyClasses
 
             return Convert.ToInt64(hexValue, 16);
         }
-
 
         public static uint LoopAByteReverse(this byte byteToEncrypt, byte[] currentKeyBlock, uint currentKeyBlockOffset)
         {
@@ -127,7 +120,6 @@ namespace DoCTextTool.CryptographyClasses
 
             return byteToEncrypt;
         }
-
 
         public static uint ComputeCheckSum(this BinaryReader readerName)
         {

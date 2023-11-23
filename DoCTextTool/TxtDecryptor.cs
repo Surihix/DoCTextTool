@@ -1,11 +1,11 @@
-﻿using DoCTextTool.CryptographyClasses;
+﻿using DoCTextTool.CryptoClasses;
 using System;
 using System.IO;
 using static DoCTextTool.SupportClasses.ToolHelpers;
 
 namespace DoCTextTool
 {
-    internal class TextDecryptor
+    internal class TxtDecryptor
     {
         public static void DecryptProcess(string inFile)
         {
@@ -18,29 +18,12 @@ namespace DoCTextTool
             {
                 using (var inFileReader = new BinaryReader(inFileStream))
                 {
-                    // Check header
-                    if (inFileStream.Length < 32)
-                    {
-                        ExitType.Error.ExitProgram("Header length is not valid");
-                    }
+                    inFileStream.Length.HeaderLengthCheck();
 
                     inFileReader.BaseStream.Position = 0;
                     var headerValue = inFileReader.ReadUInt64();
 
-                    // If its not encrypted
-                    // header, then throw the
-                    // appropriate exit message
-                    if (headerValue != 10733845617377775685)
-                    {
-                        if (headerValue == 1)
-                        {
-                            ExitType.Error.ExitProgram("File is already decrypted.");
-                        }
-                        else
-                        {
-                            ExitType.Error.ExitProgram("This is not a valid Dirge Of Cerberus text file.");
-                        }
-                    }
+                    headerValue.HeaderValueCheck(true);
 
                     using (var decryptedStream = new MemoryStream())
                     {
@@ -83,7 +66,9 @@ namespace DoCTextTool
                 }
             }
 
-            ExitType.Success.ExitProgram($"Finished copying decrypted data to '{Path.GetFileName(outFile)}' file");
+            File.Delete(inFile);
+            File.Move(outFile, Path.Combine(Path.GetDirectoryName(outFile), $"{Path.GetFileNameWithoutExtension(outFile)}.bin"));
+            ExitType.Success.ExitProgram($"Finished decrypting data");
         }
     }
 }

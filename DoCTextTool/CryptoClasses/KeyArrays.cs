@@ -1,4 +1,4 @@
-﻿namespace DoCTextTool.CryptographyClasses
+﻿namespace DoCTextTool.CryptoClasses
 {
     internal class KeyArrays
     {

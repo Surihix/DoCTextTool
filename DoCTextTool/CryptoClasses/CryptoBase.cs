@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace DoCTextTool.CryptographyClasses
+namespace DoCTextTool.CryptoClasses
 {
-    internal class CryptographyHelpers
+    internal class CryptoBase
     {
         public static void BlockByteCounterSetup(uint blockByteCounter, ref uint keyBlockOffset, 
             ref uint blockByteCounter_Eval, ref uint blockByteCounter_Fval)

@@ -6,13 +6,6 @@ namespace DoCTextTool.SupportClasses
 {
     internal static class ToolHelpers
     {
-        public static string ExampleMsg = "Examples:" +
-                    "\nDoCTextTool.exe -d \"string_us.bin\"" + "\nDoCTextTool.exe -e \"string_us.dec\"" +
-                    "\nDoCTextTool.exe -x \"string_us.bin\"" + "\nDoCTextTool.exe -c \"string_us.txt\"";
-
-        public static string ActionSwitchesMsg = "Action Switches:" +
-            "\n-d = to decrypt\n-e = to encrypt\n-x = to extract\n-c = to convert";
-
         public static void ExitProgram(this ExitType typeCode, string exitMsg)
         {
             var exitType = "";
@@ -51,7 +44,39 @@ namespace DoCTextTool.SupportClasses
             }
         }
 
-        public static void CopyInBuffers(this Stream inStream, Stream outStream, long size)
+        public static void HeaderLengthCheck(this long headerLength)
+        {
+            if (headerLength < 32)
+            {
+                ExitType.Error.ExitProgram("Header length is not valid");
+            }
+        }
+
+        public static void HeaderValueCheck(this ulong headerValue, bool isCryptProcess)
+        {
+            if (headerValue != 10733845617377775685)
+            {
+                if (headerValue == 1)
+                {
+                    switch (isCryptProcess)
+                    {
+                        case true:
+                            ExitType.Error.ExitProgram("File is already decrypted.");
+                            break;
+
+                        case false:
+                            ExitType.Error.ExitProgram("File is already decrypted. Ensure that the text bin file is encrypted before extracting it.");
+                            break;
+                    }         
+                }
+                else
+                {
+                    ExitType.Error.ExitProgram("This is not a valid Dirge Of Cerberus text file.");
+                }
+            }
+        }
+
+        public static void ExCopyTo(this Stream inStream, Stream outStream, long size)
         {
             int bufferSize = 81920;
             long amountRemaining = size;
