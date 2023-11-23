@@ -1,4 +1,4 @@
-First off majority of the credits goes to Shademp for researching this format and the decryption method.
+First off majority of the credits goes to Shademp for researching this format and for teaching how the decryption method works.
 
 All of the text bin files in this game are encrypted by default. you can use my tool's decryption function to just decrypt the file and properly reveal the offsets. the files when in encrypted state, always begin with this following header: 
 <br>``45 90 AF F9 B7 47 F6 94``
@@ -10,7 +10,7 @@ The decrypted text snippet section can contain either a decrypted line or a line
 After the decrypted text snippet is added, if the text bin file's size is not divisible by 8 then null bytes are padded to reach the closest divisible by 8 size. the decrypted text snippet size value in the [Header Section](https://github.com/Surihix/DoCTextTool/blob/master/Docs/FileStructure.md#header-section) will take those null bytes into account along with the size of the decrypted text snippet.
 <br>
 
-#### Header Section
+### Header Section
 | Offset | Size | Type | Description |
 | --- | --- | --- | --- |
 | 0x0 | 0x4 | UInt32 | Seed Value A, always 1 |
@@ -22,7 +22,7 @@ After the decrypted text snippet is added, if the text bin file's size is not di
 | 0x10 | 0x4 | UInt32 | Decompressed Body Section size |
 | 0x14 | 0x4 | UInt32 | File size |
 
-#### Header Footer Section
+### Header Footer Section
 | Offset | Size | Type | Description |
 | --- | --- | --- | --- |
 | 0x18 | 0x4 | UInt32 | Header Section size, always 24 |
@@ -31,7 +31,7 @@ After the decrypted text snippet is added, if the text bin file's size is not di
 <br>
 
 
-#### Body Section
+### Body Section
 In most text bin files, the body section is zlib compressed and the footer offsets for this section would contain the size and checksum value of the compressed data. due to how the encryption function works, the size of this section would always have to be divisible by 8 and if its not divisible, then null bytes are padded to make it reach the closest divisible by 8 size. do note that the decompressed body section size in the [Header Section](https://github.com/Surihix/DoCTextTool/blob/master/Docs/FileStructure.md#header-section) will not take these null bytes into account as that offset only reflects the size of the decompressed data.
 
 You can determine whether the body section is compressed or not by seeing the Compression Flag value in the [Header Section](https://github.com/Surihix/DoCTextTool/blob/master/Docs/FileStructure.md#header-section). if its `1`, then the body section is compressed. if its `0`, then its not compressed. 
@@ -42,7 +42,7 @@ The [Decompressed Body Section](https://github.com/Surihix/DoCTextTool/blob/mast
 
 The line strings begin after the offset table and the line id strings would begin after the end of the lines strings. each line and line id string bytes would terminate with a single null byte and some null bytes are padded after the last line id string bytes, to ensure that the size of the decompressed body section is divisible by 8.
 
-#### Decompressed Body Section Table
+### Decompressed Body Section Table
 | Offset | Size | Type | Description |
 | --- | --- | --- | --- |
 | 0x0 | 0x4 | UInt32 | Unknown numerical Id |
@@ -50,7 +50,7 @@ The line strings begin after the offset table and the line id strings would begi
 | 0x8 | 0x4 | UInt32 | Line position, absolute |
 
 
-#### Body Footer Section
+### Body Footer Section
 | Offset | Size | Type | Description |
 | --- | --- | --- | --- |
 | 0x18 | 0x4 | UInt32 | Body Section size (when on the text bin file) |
@@ -58,5 +58,5 @@ The line strings begin after the offset table and the line id strings would begi
 
 <br>
 
-#### Checksum
+### Checksum
 The checksum is calculated by adding every 4th byte from the 0th byte of a section till the last 4th byte of the section. the footer section is excluded from this calculation. 
