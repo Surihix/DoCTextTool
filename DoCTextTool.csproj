@@ -56,6 +56,8 @@
     <Compile Include="DoCTextTool\SupportClasses\ToolHelpers.cs" />
     <Compile Include="DoCTextTool\CryptographyClasses\Decryption.cs" />
     <Compile Include="DoCTextTool\LineClasses\LinesExtractor.cs" />
+    <Compile Include="DoCTextTool\TextDecryptor.cs" />
+    <Compile Include="DoCTextTool\TextEncryptor.cs" />
     <Compile Include="DoCTextTool\TextExtractor.cs" />
     <Compile Include="DoCTextTool\Core.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

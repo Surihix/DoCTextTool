@@ -1,10 +1,20 @@
 ﻿using System;
 using System.IO;
+using static DoCTextTool.SupportClasses.ToolHelpers;
 
 namespace DoCTextTool.CryptographyClasses
 {
     internal static class CryptographyFunctions
     {
+        public static void LengthCheck(this long decryptionBodySize)
+        {
+            if (decryptionBodySize % 8 != 0)
+            {
+                ExitType.Error.ExitProgram("Length of the body to decrypt is not valid");
+            }
+        }
+
+
         public static uint XOR(this uint leftVal, uint rightVal)
         {
             var computedXOR = leftVal ^ rightVal;

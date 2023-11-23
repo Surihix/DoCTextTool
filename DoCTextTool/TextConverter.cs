@@ -7,7 +7,7 @@ using System.IO;
 using System.Text;
 using static DoCTextTool.SupportClasses.ToolHelpers;
 
-namespace DoCTextTool.DoCTextTool
+namespace DoCTextTool
 {
     internal class TextConverter
     {
@@ -163,7 +163,7 @@ namespace DoCTextTool.DoCTextTool
                                                             Console.WriteLine("");
 
                                                             headerStream.Seek(0, SeekOrigin.Begin);
-                                                            Encryption.EncryptSection(KeyArrays.KeyblocksHeader, 4, 0, 0, headerReader, outFileWriter);
+                                                            Encryption.EncryptSection(KeyArrays.KeyblocksHeader, 4, 0, 0, headerReader, outFileWriter, false);
 
 
                                                             // Encrypt body section
@@ -172,7 +172,7 @@ namespace DoCTextTool.DoCTextTool
 
                                                             cmpBodyStream.Seek(0, SeekOrigin.Begin);
                                                             var blockCount = (uint)cmpBodyStream.Length / 8;
-                                                            Encryption.EncryptSection(KeyArrays.KeyBlocksMainBody, blockCount, 0, 32, cmpBodyReader, outFileWriter);
+                                                            Encryption.EncryptSection(KeyArrays.KeyBlocksMainBody, blockCount, 0, 32, cmpBodyReader, outFileWriter, false);
 
 
                                                             // Copy the decrypted bottom text

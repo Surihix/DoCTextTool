@@ -5,7 +5,7 @@ namespace DoCTextTool.CryptographyClasses
 {
     internal class Encryption
     {
-        public static void EncryptSection(byte[] currentKeyBlock, uint blockCount, uint readPos, uint writePos, BinaryReader inFileReader, BinaryWriter encryptedStreamBinWriter)
+        public static void EncryptSection(byte[] currentKeyBlock, uint blockCount, uint readPos, uint writePos, BinaryReader inFileReader, BinaryWriter encryptedStreamBinWriter, bool logDisplay)
         {
             uint blockByteCounter = 0;
 
@@ -141,14 +141,16 @@ namespace DoCTextTool.CryptographyClasses
                 encryptedStreamBinWriter.Write(encryptedByteArray);
 
 
-                // Debugging purpose
-                //Console.Write($"Block: {i}  ");
+                if (logDisplay)
+                {
+                    Console.Write($"Block: {i}  ");
 
-                //Console.WriteLine(encryptedByteArray[0].ToString("X2") + " " + encryptedByteArray[1].ToString("X2") + " " +
-                //    encryptedByteArray[2].ToString("X2") + " " + encryptedByteArray[3].ToString("X2") + " " +
-                //    encryptedByteArray[4].ToString("X2") + " " + encryptedByteArray[5].ToString("X2") + " " +
-                //    encryptedByteArray[6].ToString("X2") + " " + encryptedByteArray[7].ToString("X2"));
-                //Console.WriteLine("");
+                    Console.WriteLine(encryptedByteArray[0].ToString("X2") + " " + encryptedByteArray[1].ToString("X2") + " " +
+                        encryptedByteArray[2].ToString("X2") + " " + encryptedByteArray[3].ToString("X2") + " " +
+                        encryptedByteArray[4].ToString("X2") + " " + encryptedByteArray[5].ToString("X2") + " " +
+                        encryptedByteArray[6].ToString("X2") + " " + encryptedByteArray[7].ToString("X2"));
+                    Console.WriteLine("");
+                }
 
 
                 // Move to next block

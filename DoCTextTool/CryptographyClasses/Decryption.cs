@@ -1,10 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace DoCTextTool.CryptographyClasses
 {
     internal class Decryption
     {
-        public static void DecryptSection(byte[] currentKeyBlock, uint blockCount, int readPos, int writePos, BinaryReader inFileReader, BinaryWriter decryptedStreamWriter)
+        public static void DecryptSection(byte[] currentKeyBlock, uint blockCount, int readPos, int writePos, BinaryReader inFileReader, BinaryWriter decryptedStreamBinWriter, bool logDisplay)
         {
             uint blockByteCounter = 0;
 
@@ -105,25 +106,27 @@ namespace DoCTextTool.CryptographyClasses
                 var decryptedByteLowerArray = decryptBytesLowerVal.LongHexToUIntHexArray();
                 var decryptedByteHigherArray = decryptBytesHigherVal.LongHexToUIntHexArray();
 
-                decryptedStreamWriter.BaseStream.Position = writePos;
-                decryptedStreamWriter.Write(decryptedByteHigherArray);
+                decryptedStreamBinWriter.BaseStream.Position = writePos;
+                decryptedStreamBinWriter.Write(decryptedByteHigherArray);
 
-                decryptedStreamWriter.BaseStream.Position = writePos + 4;
-                decryptedStreamWriter.Write(decryptedByteLowerArray);
+                decryptedStreamBinWriter.BaseStream.Position = writePos + 4;
+                decryptedStreamBinWriter.Write(decryptedByteLowerArray);
 
 
-                // Debugging purpose
-                //Console.Write($"Block: {i}  ");
+                if (logDisplay)
+                {
+                    Console.Write($"Block: {i}  ");
 
-                //Console.Write(decryptedByteHigherArray[0].ToString("X2") + " " +
-                //    decryptedByteHigherArray[1].ToString("X2") + " " + decryptedByteHigherArray[2].ToString("X2") + " " +
-                //    decryptedByteHigherArray[3].ToString("X2") + " ");
+                    Console.Write(decryptedByteHigherArray[0].ToString("X2") + " " +
+                        decryptedByteHigherArray[1].ToString("X2") + " " + decryptedByteHigherArray[2].ToString("X2") + " " +
+                        decryptedByteHigherArray[3].ToString("X2") + " ");
 
-                //Console.Write(decryptedByteLowerArray[0].ToString("X2") + " " +
-                //    decryptedByteLowerArray[1].ToString("X2") + " " + decryptedByteLowerArray[2].ToString("X2") + " " +
-                //    decryptedByteLowerArray[3].ToString("X2"));
+                    Console.Write(decryptedByteLowerArray[0].ToString("X2") + " " +
+                        decryptedByteLowerArray[1].ToString("X2") + " " + decryptedByteLowerArray[2].ToString("X2") + " " +
+                        decryptedByteLowerArray[3].ToString("X2"));
 
-                //Console.WriteLine("");
+                    Console.WriteLine("");
+                }
 
 
                 // Move to next block

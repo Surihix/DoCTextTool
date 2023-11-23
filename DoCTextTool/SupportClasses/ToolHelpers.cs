@@ -6,6 +6,13 @@ namespace DoCTextTool.SupportClasses
 {
     internal static class ToolHelpers
     {
+        public static string ExampleMsg = "Examples:" +
+                    "\nDoCTextTool.exe -d \"string_us.bin\"" + "\nDoCTextTool.exe -e \"string_us.dec\"" +
+                    "\nDoCTextTool.exe -x \"string_us.bin\"" + "\nDoCTextTool.exe -c \"string_us.txt\"";
+
+        public static string ActionSwitchesMsg = "Action Switches:" +
+            "\n-d = to decrypt\n-e = to encrypt\n-x = to extract\n-c = to convert";
+
         public static void ExitProgram(this ExitType typeCode, string exitMsg)
         {
             var exitType = "";

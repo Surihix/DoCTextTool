@@ -39,7 +39,7 @@ namespace DoCTextTool
 
                         if (headerValue == 1)
                         {
-                            ExitType.Error.ExitProgram("File is already decrypted. this may not be a valid Dirge Of Cerberus text file.");
+                            ExitType.Error.ExitProgram("File is already decrypted. Ensure that the text bin file is encrypted before extracting it.");
                         }
                         else
                         {
@@ -58,7 +58,7 @@ namespace DoCTextTool
                                 Console.WriteLine("Decrypting header section....");
                                 Console.WriteLine("");
 
-                                Decryption.DecryptSection(KeyArrays.KeyblocksHeader, 4, 0, 0, inFileReader, decryptedStreamBinWriter);
+                                Decryption.DecryptSection(KeyArrays.KeyblocksHeader, 4, 0, 0, inFileReader, decryptedStreamBinWriter, false);
 
                                 var header = new FileStructs.Header();
                                 decryptedStreamBinReader.BaseStream.Position = 8;
@@ -89,12 +89,9 @@ namespace DoCTextTool
                                 // Check if the length of the
                                 // body section to decrypt is
                                 // valid
-                                if (decryptionBodySize % 8 != 0)
-                                {
-                                    ExitType.Error.ExitProgram("Length of the body to decrypt is not valid");
-                                }
+                                decryptionBodySize.LengthCheck();
 
-                                Decryption.DecryptSection(KeyArrays.KeyBlocksMainBody, blockCount, 32, 32, inFileReader, decryptedStreamBinWriter);
+                                Decryption.DecryptSection(KeyArrays.KeyBlocksMainBody, blockCount, 32, 32, inFileReader, decryptedStreamBinWriter, false);
 
                                 // Debugging purpose
                                 //File.WriteAllBytes("DecryptedDataTest", decryptedStream.ToArray());

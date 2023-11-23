@@ -1,5 +1,4 @@
-﻿using DoCTextTool.DoCTextTool;
-using DoCTextTool.SupportClasses;
+﻿using DoCTextTool.SupportClasses;
 using System;
 using System.IO;
 using System.Security.Cryptography;
@@ -42,9 +41,7 @@ namespace DoCTextTool
 
             if (args.Length < 2)
             {
-                var warnMsg = "Enough arguments not specified\n\n";
-                var warnMsgExample = "Examples:\nDoCTextTool.exe -e \"string_us.bin\"\nDoCTextTool.exe -c \"string_us.txt\"";
-                ExitType.Warning.ExitProgram(warnMsg + warnMsgExample);
+                ExitType.Warning.ExitProgram($"Enough arguments not specified\n\n{ActionSwitchesMsg}\n\n{ExampleMsg}");
             }
 
             var toolActionSwitch = new ActionSwitches();
@@ -54,28 +51,31 @@ namespace DoCTextTool
             }
             else
             {
-                ExitType.Error.ExitProgram("Invalid action switch specified. Must be \"-e\" or \"-c\"");
+                ExitType.Error.ExitProgram($"Invalid action switch specified\n\n{ActionSwitchesMsg}");
+            }
+
+            if (!File.Exists(args[1]))
+            {
+                ExitType.Error.ExitProgram("Specified file is missing");
             }
 
             try
             {
                 switch (toolActionSwitch)
                 {
-                    case ActionSwitches.e:
-                        if (!File.Exists(args[1]))
-                        {
-                            ExitType.Error.ExitProgram("Specified file is missing");
-                        }
+                    case ActionSwitches.d:
+                        TextDecryptor.DecryptProcess(args[1]);
+                        break;
 
+                    case ActionSwitches.e:
+                        TextEncryptor.EncryptProcess(args[1]);
+                        break;
+
+                    case ActionSwitches.x:
                         TextExtractor.ExtractProcess(args[1]);
                         break;
 
                     case ActionSwitches.c:
-                        if (!File.Exists(args[1]))
-                        {
-                            ExitType.Error.ExitProgram("Specified file is missing");
-                        }
-
                         TextConverter.ConvertProcess(args[1]);
                         break;
                 }
@@ -88,7 +88,9 @@ namespace DoCTextTool
 
         enum ActionSwitches
         {
+            d,
             e,
+            x,
             c
         }
     }
