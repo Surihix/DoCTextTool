@@ -1,4 +1,4 @@
-First off majority of the credits goes to Shademp for researching this format and for teaching how the decryption method works.
+First off majority of the credits goes to [Shademp](https://github.com/Shademp) for researching this format and for teaching me how the decryption method works.
 
 All of the text bin files in this game are encrypted by default. you can use my tool's decryption function to just decrypt the file and properly reveal the offsets. the files when in encrypted state, always begin with this following header: 
 <br>``45 90 AF F9 B7 47 F6 94``
