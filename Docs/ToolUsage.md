@@ -1,5 +1,5 @@
 # Instructions
-The program should be launched from a command prompt terminal with these following argument switches along with the input file:
+The program should be launched from a command prompt terminal with any one of these following argument switches, along with the input file:
 <br>``-d`` Decrypts a text bin file
 <br>``-e`` Encrypts a text bin file
 <br>``-x`` Extracts text data from a text bin file into a normal text file
