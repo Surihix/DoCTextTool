@@ -1,6 +1,8 @@
 First off majority of the credits goes to [Shademp](https://github.com/Shademp) for researching this format and for teaching me the decryption method.
 
-All of the text bin files in this game are encrypted by default. you can use my tool's decryption function to just decrypt the file and properly reveal the offsets. the files when in encrypted state, always begin with this following header: 
+All of the text bin files in this game are encrypted by default. use my tool's decryption function to just decrypt the file for revealing the offsets and follow along with the below information. additionally I have included a .bt template in the Docs folder which you can use with 010 hex editor when the text bin file is opened in the editor.
+
+The files when in encrypted state, always begin with this following header: 
 <br>``45 90 AF F9 B7 47 F6 94``
 
 The file is split into three main parts. a [Header Section](https://github.com/Surihix/DoCTextTool/blob/master/Docs/FileStructure.md#header-section), a [Body Section](https://github.com/Surihix/DoCTextTool/blob/master/Docs/FileStructure.md#body-section) and a decrypted text snippet section at the end of the file. the header and the body sections each have its own footer sections which would contain the size and checksum values of its associated sections. 
