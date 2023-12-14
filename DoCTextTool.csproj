@@ -46,18 +46,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DoCTextTool\CryptoClasses\Generators.cs" />
+    <Compile Include="DoCTextTool\CryptoClasses\IntegersArray.cs" />
     <Compile Include="DoCTextTool\LineClasses\LinesConverter.cs" />
     <Compile Include="DoCTextTool\TxtConverter.cs" />
     <Compile Include="DoCTextTool\CryptoClasses\CryptoFunctions.cs" />
     <Compile Include="DoCTextTool\CryptoClasses\CryptoBase.cs" />
     <Compile Include="DoCTextTool\CryptoClasses\Encryption.cs" />
-    <Compile Include="DoCTextTool\CryptoClasses\KeyArrays.cs" />
     <Compile Include="DoCTextTool\SupportClasses\FileStructs.cs" />
     <Compile Include="DoCTextTool\SupportClasses\ToolHelpers.cs" />
     <Compile Include="DoCTextTool\CryptoClasses\Decryption.cs" />
     <Compile Include="DoCTextTool\LineClasses\LinesExtractor.cs" />
-    <Compile Include="DoCTextTool\TxtDecryptor.cs" />
-    <Compile Include="DoCTextTool\TxtEncryptor.cs" />
     <Compile Include="DoCTextTool\TxtExtractor.cs" />
     <Compile Include="DoCTextTool\Core.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -38,13 +38,12 @@ namespace DoCTextTool
 
             var exampleMsgArray = new string[]
             {
-                "Examples:", "DoCTextTool.exe -d \"string_us.bin\"", "DoCTextTool.exe -e \"string_us.bin\"", 
-                "DoCTextTool.exe -x \"string_us.bin\"", "DoCTextTool.exe -c \"string_us.txt\""
+                "Examples:", "DoCTextTool.exe -x \"string_us.bin\"", "DoCTextTool.exe -c \"string_us.txt\""
             };
 
             var actionSwitchesMsgArray = new string[] 
             {
-                "Action Switches:", "-d = To Decrypt", "-e = To Encrypt", "-x = To Extract", "-c = To Convert"
+                "Action Switches:", "-x = To Extract", "-c = To Convert"
             };
 
             Console.Clear();
@@ -76,14 +75,6 @@ namespace DoCTextTool
             {
                 switch (toolActionSwitch)
                 {
-                    case ActionSwitches.d:
-                        TxtDecryptor.DecryptProcess(args[1]);
-                        break;
-
-                    case ActionSwitches.e:
-                        TxtEncryptor.EncryptProcess(args[1]);
-                        break;
-
                     case ActionSwitches.x:
                         TxtExtractor.ExtractProcess(args[1]);
                         break;
@@ -101,8 +92,6 @@ namespace DoCTextTool
 
         enum ActionSwitches
         {
-            d,
-            e,
             x,
             c
         }

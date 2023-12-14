@@ -5,83 +5,81 @@ namespace DoCTextTool.CryptoClasses
 {
     internal class Decryption
     {
-        public static void DecryptSection(byte[] currentKeyBlock, uint blockCount, int readPos, int writePos, BinaryReader inFileReader, BinaryWriter decryptedStreamBinWriter, bool logDisplay)
+        public static void DecryptBlocks(byte[] keyblocksTable, uint blockCount, uint readPos, uint writePos, BinaryReader inFileReader, BinaryWriter decryptedStreamBinWriter, bool logDisplay)
         {
-            uint blockByteCounter = 0;
+            uint blockCounter = 0;
 
             for (int i = 0; i < blockCount; i++)
             {
-                // Setup BlockByteCounter according
+                // Setup BlockCounter according
                 // to the currentBlockId and read
                 // 8 bytes (a block) to decrypt
-                var currentBlockId = blockByteCounter >> 3;
+                var currentBlockId = blockCounter >> 3;
 
                 inFileReader.BaseStream.Position = readPos;
                 var currentBytes = inFileReader.ReadBytes(8);
 
 
-                // Setup BlockByteCounter variables
-                uint keyBlockOffset = 0;
-                uint blockByteCounter_Eval = 0;
-                uint blockByteCounter_Fval = 0;
-                CryptoBase.BlockByteCounterSetup(blockByteCounter, ref keyBlockOffset, ref blockByteCounter_Eval, ref blockByteCounter_Fval);
+                // Setup BlockCounter variables
+                uint tableOffset = 0;
+                CryptoBase.BlockCounterSetup(blockCounter, ref tableOffset);
 
 
                 // Shift all of the byte
                 // value 8 times and 
                 // perform a XOR operation
-                var decryptedByte1 = ((currentBlockId.XOR(69)) & 255).XOR(currentBytes[0]);
-                decryptedByte1 = decryptedByte1.LoopAByte(currentKeyBlock, keyBlockOffset);
+                var decryptedByte1 = ((currentBlockId ^ 69) & 255) ^ currentBytes[0];
+                decryptedByte1 = decryptedByte1.LoopAByte(keyblocksTable, tableOffset);
 
-                var decryptedByte2 = ((uint)currentBytes[0]).XOR(currentBytes[1]);
-                decryptedByte2 = decryptedByte2.LoopAByte(currentKeyBlock, keyBlockOffset);
+                var decryptedByte2 = (uint)currentBytes[0] ^ currentBytes[1];
+                decryptedByte2 = decryptedByte2.LoopAByte(keyblocksTable, tableOffset);
 
-                var decryptedByte3 = ((uint)currentBytes[1]).XOR(currentBytes[2]);
-                decryptedByte3 = decryptedByte3.LoopAByte(currentKeyBlock, keyBlockOffset);
+                var decryptedByte3 = (uint)currentBytes[1] ^ currentBytes[2];
+                decryptedByte3 = decryptedByte3.LoopAByte(keyblocksTable, tableOffset);
 
-                var decryptedByte4 = ((uint)currentBytes[2]).XOR(currentBytes[3]);
-                decryptedByte4 = decryptedByte4.LoopAByte(currentKeyBlock, keyBlockOffset);
+                var decryptedByte4 = (uint)currentBytes[2] ^ currentBytes[3];
+                decryptedByte4 = decryptedByte4.LoopAByte(keyblocksTable, tableOffset);
 
-                var decryptedByte5 = ((uint)currentBytes[3]).XOR(currentBytes[4]);
-                decryptedByte5 = decryptedByte5.LoopAByte(currentKeyBlock, keyBlockOffset);
+                var decryptedByte5 = (uint)currentBytes[3] ^ currentBytes[4];
+                decryptedByte5 = decryptedByte5.LoopAByte(keyblocksTable, tableOffset);
 
-                var decryptedByte6 = ((uint)currentBytes[4]).XOR(currentBytes[5]);
-                decryptedByte6 = decryptedByte6.LoopAByte(currentKeyBlock, keyBlockOffset);
+                var decryptedByte6 = (uint)currentBytes[4] ^ currentBytes[5];
+                decryptedByte6 = decryptedByte6.LoopAByte(keyblocksTable, tableOffset);
 
-                var decryptedByte7 = ((uint)currentBytes[5]).XOR(currentBytes[6]);
-                decryptedByte7 = decryptedByte7.LoopAByte(currentKeyBlock, keyBlockOffset);
+                var decryptedByte7 = (uint)currentBytes[5] ^ currentBytes[6];
+                decryptedByte7 = decryptedByte7.LoopAByte(keyblocksTable, tableOffset);
 
-                var decryptedByte8 = ((uint)currentBytes[6]).XOR(currentBytes[7]);
-                decryptedByte8 = decryptedByte8.LoopAByte(currentKeyBlock, keyBlockOffset);
+                var decryptedByte8 = (uint)currentBytes[6] ^ currentBytes[7];
+                decryptedByte8 = decryptedByte8.LoopAByte(keyblocksTable, tableOffset);
 
 
                 // Setup decrypted byte variables
-                var decryptedBytes_LowerArray = new byte[] { (byte)decryptedByte4, (byte)decryptedByte3, (byte)decryptedByte2, (byte)decryptedByte1 };
-                var decryptedBytesLowerVal = decryptedBytes_LowerArray.ArrayToUIntHexNum();
+                var decryptedBytesArray = new byte[] { (byte)decryptedByte5, (byte)decryptedByte6, (byte)decryptedByte7,
+                    (byte)decryptedByte8, (byte)decryptedByte1, (byte)decryptedByte2, (byte)decryptedByte3, (byte)decryptedByte4 };
 
-                var decryptedBytes_HigherArray = new byte[] { (byte)decryptedByte8, (byte)decryptedByte7, (byte)decryptedByte6, (byte)decryptedByte5 };
-                var decryptedBytesHigherVal = decryptedBytes_HigherArray.ArrayToUIntHexNum();
+                var decryptedBytesHigherVal = BitConverter.ToUInt32(decryptedBytesArray, 0);
+                var decryptedBytesLowerVal = BitConverter.ToUInt32(decryptedBytesArray, 4);
 
 
-                // Setup KeyBlock variables
-                uint keyBlockActiveLowerValue = 0;
-                uint keyBlockActiveHigherValue = 0;
-                CryptoBase.KeyBlockSetup(currentKeyBlock, keyBlockOffset, ref keyBlockActiveLowerValue, ref keyBlockActiveHigherValue);
+                // Setup keyblock variables
+                uint keyblockLowerVal = 0;
+                uint keyblockHigherVal = 0;
+                CryptoBase.KeyblockSetup(keyblocksTable, tableOffset, ref keyblockLowerVal, ref keyblockHigherVal);
 
 
                 // Setup SpecialKey variables
                 uint carryFlag = 0;
                 long specialKey1 = 0;
                 long specialKey2 = 0;
-                CryptoBase.SpecialKeySetup(ref carryFlag, blockByteCounter_Eval, blockByteCounter_Fval, ref specialKey1, ref specialKey2);
+                CryptoBase.SpecialKeySetup(ref carryFlag, ref specialKey1, ref specialKey2);
 
 
                 // Process bytes with the SpecialKey
-                // and Keyblock variables
-                long decryptBytesLowerVal = decryptedBytesLowerVal;
-                long decryptBytesHigherVal = decryptedBytesHigherVal;
+                // and keyblock variables
+                long decryptedBytesLongLowerVal = decryptedBytesLowerVal;
+                long decryptedBytesLongHigherVal = decryptedBytesHigherVal;
 
-                if (decryptBytesLowerVal < keyBlockActiveLowerValue)
+                if (decryptedBytesLongLowerVal < keyblockLowerVal)
                 {
                     carryFlag = 1;
                 }
@@ -90,21 +88,21 @@ namespace DoCTextTool.CryptoClasses
                     carryFlag = 0;
                 }
 
-                decryptBytesLowerVal -= keyBlockActiveLowerValue;
-                decryptBytesHigherVal -= keyBlockActiveHigherValue;
-                decryptBytesHigherVal -= carryFlag;
+                decryptedBytesLongLowerVal -= keyblockLowerVal;
+                decryptedBytesLongHigherVal -= keyblockHigherVal;
+                decryptedBytesLongHigherVal -= carryFlag;
 
-                decryptBytesLowerVal ^= specialKey1;
-                decryptBytesHigherVal ^= specialKey2;
+                decryptedBytesLongLowerVal ^= specialKey1;
+                decryptedBytesLongHigherVal ^= specialKey2;
 
-                decryptBytesLowerVal ^= keyBlockActiveLowerValue;
-                decryptBytesHigherVal ^= keyBlockActiveHigherValue;
+                decryptedBytesLongLowerVal ^= keyblockLowerVal;
+                decryptedBytesLongHigherVal ^= keyblockHigherVal;
 
 
                 // Store the bytes in a array
                 // and write it to the stream
-                var decryptedByteLowerArray = decryptBytesLowerVal.LongHexToUIntHexArray();
-                var decryptedByteHigherArray = decryptBytesHigherVal.LongHexToUIntHexArray();
+                var decryptedByteLowerArray = BitConverter.GetBytes((uint)decryptedBytesLongLowerVal);
+                var decryptedByteHigherArray = BitConverter.GetBytes((uint)decryptedBytesLongHigherVal);
 
                 decryptedStreamBinWriter.BaseStream.Position = writePos;
                 decryptedStreamBinWriter.Write(decryptedByteHigherArray);
@@ -128,7 +126,7 @@ namespace DoCTextTool.CryptoClasses
 
 
                 // Move to next block
-                blockByteCounter += 8;
+                blockCounter += 8;
                 readPos += 8;
                 writePos += 8;
             }
