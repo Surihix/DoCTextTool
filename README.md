@@ -10,6 +10,6 @@ The following package is used for zlib compression and decompression:
 <br>
 
 Information on the file structure can be found here:
-<br>https://github.com/Surihix/DoCTextTool/blob/master/Docs/FileStructure.md
+<br>https://github.com/DoC-Research/Documentation/wiki/Text-bin-files
 ## Credits
 [Shademp](https://github.com/Shademp) - Decryption assembly algorithm, format research and general support
