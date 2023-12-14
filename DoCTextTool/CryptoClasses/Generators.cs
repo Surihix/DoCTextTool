@@ -83,7 +83,7 @@ namespace DoCTextTool.CryptoClasses
                 copyIndex += 8;
             }
 
-            //File.WriteAllBytes("KeysDump", finalBlocksTable);
+            //File.WriteAllBytes("KeysDump", finalKeyblocksTable);
 
             return finalKeyblocksTable;
         }

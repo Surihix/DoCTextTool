@@ -38,7 +38,9 @@ namespace DoCTextTool
 
             var exampleMsgArray = new string[]
             {
-                "Examples:", "DoCTextTool.exe -x \"string_us.bin\"", "DoCTextTool.exe -c \"string_us.txt\""
+                "Examples:", "DoCTextTool.exe -x \"string_us.bin\"", "DoCTextTool.exe -c \"string_us.txt\"", "",
+                "Important:", "Change the filename mentioned in the example to the name or path of" +
+                "\nthe file that you are trying to extract or convert.", ""
             };
 
             var actionSwitchesMsgArray = new string[] 
