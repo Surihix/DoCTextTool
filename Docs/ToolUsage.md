@@ -1,13 +1,9 @@
 # Instructions
 The program should be launched from a command prompt terminal with any one of these following argument switches, along with the input file:
-<br>``-d`` Decrypts a text bin file
-<br>``-e`` Encrypts a text bin file
 <br>``-x`` Extracts text data from a text bin file into a normal text file
 <br>``-c`` Converts the extracted normal text file data to the game's text bin format
 
 Commandline usage examples:
-<br>``DoCTextTool.exe -d "string_us.bin" ``
-<br>``DoCTextTool.exe -e "string_us.bin" ``
 <br>``DoCTextTool.exe -x "string_us.bin" ``
 <br>``DoCTextTool.exe -c "string_us.txt" ``
 
