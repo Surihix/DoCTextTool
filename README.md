@@ -5,8 +5,8 @@ Instructions on how to use this tool can be found here:
 <br>https://github.com/Surihix/DoCTextTool/blob/master/Docs/ToolUsage.md
 
 ## For developers
-The following package is used for zlib compression and decompression:
-- DotNetZip - https://www.nuget.org/packages/DotNetZip
+- The following package's Zlib classese were used for Zlib compression and decompression:
+<br>**DotNetZip** - https://github.com/haf/DotNetZip.Semverd
 <br>
 
 Information on the file structure can be found here:
