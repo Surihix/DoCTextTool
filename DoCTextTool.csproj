@@ -33,9 +33,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DotNetZip, Version=1.16.0.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
-      <HintPath>packages\DotNetZip.1.16.0\lib\net40\DotNetZip.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -59,11 +56,23 @@
     <Compile Include="DoCTextTool\LineClasses\LinesExtractor.cs" />
     <Compile Include="DoCTextTool\TxtExtractor.cs" />
     <Compile Include="DoCTextTool\Core.cs" />
+    <Compile Include="DoCTextTool\ZlibClasses\CRC32.cs" />
+    <Compile Include="DoCTextTool\ZlibClasses\Deflate.cs" />
+    <Compile Include="DoCTextTool\ZlibClasses\DeflateStream.cs" />
+    <Compile Include="DoCTextTool\ZlibClasses\GZipStream.cs" />
+    <Compile Include="DoCTextTool\ZlibClasses\Inflate.cs" />
+    <Compile Include="DoCTextTool\ZlibClasses\InfTree.cs" />
+    <Compile Include="DoCTextTool\ZlibClasses\ParallelDeflateOutputStream.cs" />
+    <Compile Include="DoCTextTool\ZlibClasses\Tree.cs" />
+    <Compile Include="DoCTextTool\ZlibClasses\Zlib.cs" />
+    <Compile Include="DoCTextTool\ZlibClasses\ZlibBaseStream.cs" />
+    <Compile Include="DoCTextTool\ZlibClasses\ZlibCodec.cs" />
+    <Compile Include="DoCTextTool\ZlibClasses\ZlibConstants.cs" />
+    <Compile Include="DoCTextTool\ZlibClasses\ZlibStream.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

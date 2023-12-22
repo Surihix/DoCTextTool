@@ -25,7 +25,7 @@ namespace DoCTextTool.LineClasses
                     switch (isCompressed)
                     {
                         case true:
-                            using (ZlibStream decompressor = new ZlibStream(decryptedStream, CompressionMode.Decompress, true))
+                            using (var decompressor = new ZlibStream(decryptedStream, CompressionMode.Decompress, true))
                             {
                                 decompressor.CopyTo(outBinStream);
                             }
