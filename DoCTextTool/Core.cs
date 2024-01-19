@@ -1,4 +1,5 @@
-﻿using DoCTextTool.SupportClasses;
+﻿using DoCTextTool.DoCTextTool;
+using DoCTextTool.SupportClasses;
 using System;
 using System.IO;
 using static DoCTextTool.SupportClasses.ToolHelpers;
@@ -11,14 +12,15 @@ namespace DoCTextTool
         {
             var exampleMsgArray = new string[]
             {
-                "Examples:", "DoCTextTool.exe -x \"string_us.bin\"", "DoCTextTool.exe -c \"string_us.txt\"", "",
+                "Examples:", "DoCTextTool.exe -x \"string_us.bin\"", "DoCTextTool.exe -c \"string_us.txt\"",
+                "DoCTextTool.exe -b \"string_us.bin\"", "",
                 "Important:", "Change the filename mentioned in the example to the name or path of" +
                 "\nthe file that you are trying to extract or convert.", ""
             };
 
             var actionSwitchesMsgArray = new string[]
             {
-                "Action Switches:", "-x = To Extract", "-c = To Convert"
+                "Action Switches:", "-x = To Extract", "-c = To Convert", "-b = To Extract decompressed binary data"
             };
 
             Console.WriteLine("");
@@ -56,6 +58,10 @@ namespace DoCTextTool
                     case ActionSwitches.c:
                         TxtConverter.ConvertProcess(args[1]);
                         break;
+
+                    case ActionSwitches.b:
+                        TxtDcmpBinary.BinaryProcess(args[1]);
+                        break;
                 }
             }
             catch (Exception ex)
@@ -66,8 +72,9 @@ namespace DoCTextTool
 
         enum ActionSwitches
         {
-            x,
-            c
+            b,
+            c,
+            x
         }
     }
 }

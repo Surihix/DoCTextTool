@@ -54,6 +54,7 @@
     <Compile Include="DoCTextTool\SupportClasses\ToolHelpers.cs" />
     <Compile Include="DoCTextTool\CryptoClasses\Decryption.cs" />
     <Compile Include="DoCTextTool\LineClasses\LinesExtractor.cs" />
+    <Compile Include="DoCTextTool\TxtDcmpBinary.cs" />
     <Compile Include="DoCTextTool\TxtExtractor.cs" />
     <Compile Include="DoCTextTool\Core.cs" />
     <Compile Include="DoCTextTool\ZlibClasses\CRC32.cs" />

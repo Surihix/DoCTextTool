@@ -33,7 +33,7 @@ namespace DoCTextTool
                 inFileReader.BaseStream.Position = 0;
                 var headerValue = inFileReader.ReadUInt64();
 
-                headerValue.HeaderValueCheck(false);
+                headerValue.HeaderValueCheck();
 
                 using (var decryptedStream = new MemoryStream())
                 {

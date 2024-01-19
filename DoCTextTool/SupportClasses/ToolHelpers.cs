@@ -52,26 +52,19 @@ namespace DoCTextTool.SupportClasses
             }
         }
 
-        public static void HeaderValueCheck(this ulong headerValue, bool isCryptProcess)
+        public static void HeaderValueCheck(this ulong headerValue)
         {
             if (headerValue != 10733845617377775685)
             {
-                if (headerValue == 1)
+                switch (headerValue)
                 {
-                    switch (isCryptProcess)
-                    {
-                        case true:
-                            ExitType.Error.ExitProgram("File is already decrypted");
-                            break;
+                    case 1:
+                        ExitType.Error.ExitProgram("File is in decrypted state. ensure that the text bin file is encrypted before processing it with this tool.");
+                        break;
 
-                        case false:
-                            ExitType.Error.ExitProgram("File is decrypted. ensure that the text bin file is encrypted before extracting it.");
-                            break;
-                    }         
-                }
-                else
-                {
-                    ExitType.Error.ExitProgram("This is not a valid Dirge Of Cerberus text file.");
+                    default:
+                        ExitType.Error.ExitProgram("This is not a valid Dirge Of Cerberus text file.");
+                        break;
                 }
             }
         }
