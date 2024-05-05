@@ -26,7 +26,7 @@ namespace DoCTextTool
 
             var encodingSwitchesMsgArray = new string[]
             {
-                "Encoding Switches:", "-lt", "-jp"
+                "Encoding Switches:", "-lt = For English and Latin text bin files", "-jp = For Japanese text bin files"
             };
 
             Console.WriteLine("");
