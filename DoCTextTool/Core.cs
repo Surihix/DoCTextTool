@@ -20,7 +20,8 @@ namespace DoCTextTool
 
             var actionSwitchesMsgArray = new string[]
             {
-                "Action Switches:", "-x = To Extract", "-c = To Convert", "-b = To Extract decompressed binary data"
+                "Action Switches:", "-x = To Extract", "-c = To Convert", "-b = To Extract decompressed binary data",
+                "-h or -? = To display tool instructions"
             };
 
             var encodingSwitchesMsgArray = new string[]
@@ -32,6 +33,16 @@ namespace DoCTextTool
 
 
             // Check launch arguments
+            if (args.Length == 1)
+            {
+                if (args[0] == "-h" || args[0] == "-?")
+                {
+                    Console.WriteLine($"\n{string.Join("\n", actionSwitchesMsgArray)}\n\n{string.Join("\n", encodingSwitchesMsgArray)}\n\n{string.Join("\n", exampleMsgArray)}");
+                    Console.ReadLine();
+                    Environment.Exit(0);
+                }
+            }
+
             if (args.Length < 2)
             {
                 ExitType.Warning.ExitProgram($"Enough arguments not specified\n\n{string.Join("\n", actionSwitchesMsgArray)}\n\n{string.Join("\n", encodingSwitchesMsgArray)}\n\n{string.Join("\n", exampleMsgArray)}");

@@ -26,9 +26,17 @@ namespace DoCTextTool.SupportClasses
                     break;
             }
 
-            Console.WriteLine($"{exitAs}: {exitMsg}");
-            Console.ReadLine();
-            Environment.Exit(exitCode);
+            if (exitType == ExitType.Success)
+            {
+                Console.WriteLine($"{exitAs}: {exitMsg}");
+                Environment.Exit(exitCode);
+            }
+            else
+            {
+                Console.WriteLine($"{exitAs}: {exitMsg}");
+                Console.ReadLine();
+                Environment.Exit(exitCode);
+            }
         }
 
         public enum ExitType
