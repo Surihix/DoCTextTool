@@ -12,7 +12,7 @@ namespace DoCTextTool
         {
             var exampleMsgArray = new string[]
             {
-                "Examples:", "DoCTextTool.exe -x \"string_us.bin\"", "DoCTextTool.exe -c \"string_us.txt\"",
+                "Examples:", "DoCTextTool.exe -x -lt \"string_us.bin\"", "DoCTextTool.exe -c -lt \"string_us.txt\"",
                 "DoCTextTool.exe -b \"string_us.bin\"", "",
                 "Important:", "Change the filename mentioned in the example to the name or path of" +
                 "\nthe file that you are trying to extract or convert.", ""
@@ -23,13 +23,18 @@ namespace DoCTextTool
                 "Action Switches:", "-x = To Extract", "-c = To Convert", "-b = To Extract decompressed binary data"
             };
 
+            var encodingSwitchesMsgArray = new string[]
+            {
+                "Encoding Switches:", "-lt", "-jp"
+            };
+
             Console.WriteLine("");
 
 
             // Check launch arguments
             if (args.Length < 2)
             {
-                ExitType.Warning.ExitProgram($"Enough arguments not specified\n\n{string.Join("\n", actionSwitchesMsgArray)}\n\n{string.Join("\n", exampleMsgArray)}");
+                ExitType.Warning.ExitProgram($"Enough arguments not specified\n\n{string.Join("\n", actionSwitchesMsgArray)}\n\n{string.Join("\n", encodingSwitchesMsgArray)}\n\n{string.Join("\n", exampleMsgArray)}");
             }
 
             var toolActionSwitch = new ActionSwitches();
@@ -39,10 +44,33 @@ namespace DoCTextTool
             }
             else
             {
-                ExitType.Error.ExitProgram($"Invalid or no action switch specified\n\n{string.Join("\n", actionSwitchesMsgArray)}");
+                ExitType.Error.ExitProgram($"Invalid action switch specified\n\n{string.Join("\n", actionSwitchesMsgArray)}");
             }
 
-            if (!File.Exists(args[1]))
+            // Determine the encoding switch
+            // depending on the action switch
+            var inFile = args[1];
+
+            if (toolActionSwitch != ActionSwitches.b)
+            {
+                if (args.Length < 3)
+                {
+                    ExitType.Warning.ExitProgram("Enough arguments not specified for this tool action");
+                }
+
+                inFile = args[2];
+
+                if (Enum.TryParse(args[1].Replace("-", ""), false, out ToolVariables.EncodingSwitches convertedEncodingSwitch))
+                {
+                    ToolVariables.TxtEncoding = convertedEncodingSwitch;
+                }
+                else
+                {
+                    ExitType.Error.ExitProgram($"Invalid encoding switch specified\n\n{string.Join("\n", encodingSwitchesMsgArray)}");
+                }
+            }
+
+            if (!File.Exists(inFile))
             {
                 ExitType.Error.ExitProgram("Specified file is missing");
             }
@@ -52,15 +80,15 @@ namespace DoCTextTool
                 switch (toolActionSwitch)
                 {
                     case ActionSwitches.x:
-                        TxtExtractor.ExtractProcess(args[1]);
+                        TxtExtractor.ExtractProcess(inFile);
                         break;
 
                     case ActionSwitches.c:
-                        TxtConverter.ConvertProcess(args[1]);
+                        TxtConverter.ConvertProcess(inFile);
                         break;
 
                     case ActionSwitches.b:
-                        TxtDcmpBinary.BinaryProcess(args[1]);
+                        TxtDcmpBinary.BinaryProcess(inFile);
                         break;
                 }
             }

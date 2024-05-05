@@ -6,27 +6,29 @@ namespace DoCTextTool.SupportClasses
 {
     internal static class ToolHelpers
     {
-        public static void ExitProgram(this ExitType typeCode, string exitMsg)
+        public static void ExitProgram(this ExitType exitType, string exitMsg)
         {
-            var exitType = "";
-            switch (typeCode)
+            var exitAs = "";
+            var exitCode = 0;
+            switch (exitType)
             {
                 case ExitType.Error:
-                    exitType = "Error";
+                    exitAs = "Error";
+                    exitCode = 1;
                     break;
 
                 case ExitType.Warning:
-                    exitType = "Warning";
+                    exitAs = "Warning";
                     break;
 
                 case ExitType.Success:
-                    exitType = "Success";
+                    exitAs = "Success";
                     break;
             }
 
-            Console.WriteLine($"{exitType}: {exitMsg}");
+            Console.WriteLine($"{exitAs}: {exitMsg}");
             Console.ReadLine();
-            Environment.Exit(0);
+            Environment.Exit(exitCode);
         }
 
         public enum ExitType

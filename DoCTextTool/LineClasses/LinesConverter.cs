@@ -33,7 +33,7 @@ namespace DoCTextTool.LineClasses
                     // Process lines and unknownIds
                     Console.WriteLine("Parsing lines....");
 
-                    var lineOffsets = new FileStructs.LineOffsets();
+                    var lineOffsets = new ToolVariables.LineOffsets();
                     long bodySectionWritePos = 0;
                     lineOffsets.LineOffset = 0;
                     uint lineOffsetAbsoluteStartPos = (uint)(lineCount * 12) + 32;
@@ -66,10 +66,11 @@ namespace DoCTextTool.LineClasses
                     inFileReader.BaseStream.Seek(0, SeekOrigin.Begin);
                     _ = inFileReader.ReadLine();
                     bodySectionWritePos = 0;
+                    var splitChara = new string[] { " || " };
 
                     for (int li = 0; li < lineCount; li++)
                     {
-                        var currentLineIdData = inFileReader.ReadLine().Split(new string[] { " || " }, StringSplitOptions.None);
+                        var currentLineIdData = inFileReader.ReadLine().Split(splitChara, StringSplitOptions.None);
                         var currentLineId = EncodingShift(currentLineIdData[1]);
 
                         lineOffsets.LineIdOffset = (uint)linesStream.Length;
@@ -99,9 +100,20 @@ namespace DoCTextTool.LineClasses
         static byte[] EncodingShift(string inputString)
         {
             var stringsUTF8Array = Encoding.UTF8.GetBytes(inputString);
-            var stringsShiftJSArray = Encoding.Convert(Encoding.UTF8, Encoding.GetEncoding("shift-jis"), stringsUTF8Array);
 
-            return stringsShiftJSArray;
+            var stringShiftedArray = new byte[] { };
+            switch (ToolVariables.TxtEncoding)
+            {
+                case ToolVariables.EncodingSwitches.lt:
+                    stringShiftedArray = Encoding.Convert(Encoding.UTF8, Encoding.GetEncoding(1252), stringsUTF8Array);
+                    break;
+
+                case ToolVariables.EncodingSwitches.jp:
+                    stringShiftedArray = Encoding.Convert(Encoding.UTF8, Encoding.GetEncoding(932), stringsUTF8Array);
+                    break;
+            }
+
+            return stringShiftedArray;
         }
 
 

@@ -14,17 +14,10 @@ namespace DoCTextTool
             Console.WriteLine($"Extracting text data from '{Path.GetFileName(inFile)}'....");
             Console.WriteLine("");
 
-            var outFile = Path.Combine(Path.GetDirectoryName(inFile), $"{Path.GetFileNameWithoutExtension(inFile)}.txt");
-
-            Console.WriteLine("Generating Keyblocks tables....");
+            Console.WriteLine($"Encoding Specified: {ToolVariables.TxtEncoding.ToString().Replace("lt", "Latin").Replace("jp", "Japanese")}");
             Console.WriteLine("");
 
-            var headerSeedArray = new byte[] { 136, 86, 49, 149, 241, 163, 137, 87 };
-            var bodySeedArray = new byte[] { 1, 0, 0, 0, 0, 0, 0, 0 };
-
-            var keyblocksTableHeader = Generators.GenerateKeyblocksTable(headerSeedArray, false);
-            var keyblocksTableBody = Generators.GenerateKeyblocksTable(bodySeedArray, false);
-
+            var outFile = Path.Combine(Path.GetDirectoryName(inFile), $"{Path.GetFileNameWithoutExtension(inFile)}.txt");
 
             using (var inFileReader = new BinaryReader(File.Open(inFile, FileMode.Open, FileAccess.Read)))
             {
@@ -43,12 +36,29 @@ namespace DoCTextTool
                         {
 
                             // Header
-                            Console.WriteLine("Decrypting header section....");
+                            Console.WriteLine("Generating header keyblock table....");
                             Console.WriteLine("");
 
+                            var headerSeedArray = new byte[] { 136, 86, 49, 149, 241, 163, 137, 87 };
+                            var keyblocksTableHeader = Generators.GenerateKeyblocksTable(headerSeedArray, false);
+
+                            Console.WriteLine("Decrypting header section....");
+                            Console.WriteLine("");
                             Decryption.DecryptBlocks(keyblocksTableHeader, 4, 0, 0, inFileReader, decryptedStreamBinWriter, false);
 
-                            var header = new FileStructs.Header();
+                            var header = new ToolVariables.Header();
+
+                            decryptedStreamBinReader.BaseStream.Position = 28;
+                            header.HeaderCheckSum = decryptedStreamBinReader.ReadUInt32();
+
+                            if (header.HeaderCheckSum != decryptedStreamBinReader.ComputeCheckSum(24 / 4, 0))
+                            {
+                                ExitType.Error.ExitProgram("Header section was not decrypted properly");
+                            }
+
+                            decryptedStreamBinReader.BaseStream.Position = 0;
+                            header.SeedValue = decryptedStreamBinReader.ReadUInt64();
+
                             decryptedStreamBinReader.BaseStream.Position = 8;
                             header.LineCount = decryptedStreamBinReader.ReadUInt16();
 
@@ -62,25 +72,39 @@ namespace DoCTextTool
                                 isCompressed = false;
                             }
 
+                            Console.WriteLine("");
                             Console.WriteLine($"Line count: {header.LineCount}");
                             Console.WriteLine($"Decrypted bottom text Size: {header.DecryptedFooterTxtSize}");
                             Console.WriteLine($"Compression Flag: {isCompressed}");
+                            Console.WriteLine("");
+                            Console.WriteLine("");
 
 
                             // Body
+                            Console.WriteLine("Generating body keyblock table....");
                             Console.WriteLine("");
+                            var keyblocksTableBody = Generators.GenerateKeyblocksTable(BitConverter.GetBytes(header.SeedValue), false);
+
                             Console.WriteLine("Decrypting body section....");
+                            Console.WriteLine("");
 
                             var decryptionBodySize = new FileInfo(inFile).Length - header.DecryptedFooterTxtSize - 32;
                             ((uint)decryptionBodySize).CryptoLengthCheck();
 
                             var blockCount = (uint)decryptionBodySize / 8;
-
                             Decryption.DecryptBlocks(keyblocksTableBody, blockCount, 32, 32, inFileReader, decryptedStreamBinWriter, false);
 
                             // Debugging purpose
                             //File.WriteAllBytes("DecryptedDataTest", decryptedStream.ToArray());
 
+                            var bodyFooter = new ToolVariables.BodyFooter();
+                            decryptedStreamBinReader.BaseStream.Position = decryptedStreamBinReader.BaseStream.Length - 4;
+                            bodyFooter.CompressedDataCheckSum = decryptedStreamBinReader.ReadUInt32();
+
+                            if (bodyFooter.CompressedDataCheckSum != decryptedStreamBinReader.ComputeCheckSum(((uint)decryptionBodySize - 8) / 4, 32))
+                            {
+                                ExitType.Error.ExitProgram("Body section was not decrypted properly");
+                            }
 
                             // Lines
                             Console.WriteLine("");

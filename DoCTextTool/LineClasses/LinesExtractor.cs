@@ -41,7 +41,7 @@ namespace DoCTextTool.LineClasses
                         using (var outTxtBinWriter = new BinaryWriter(outTxtBinStream))
                         {
 
-                            var lineOffsets = new FileStructs.LineOffsets();
+                            var lineOffsets = new ToolVariables.LineOffsets();
                             var readPos = 32;
                             uint writePos = 0;
 
@@ -97,7 +97,18 @@ namespace DoCTextTool.LineClasses
 
                     // Convert the txt file to UTF-8
                     var outTxtBinArray = File.ReadAllBytes(outFile);
-                    var outTxtBinConverted = Encoding.Convert(Encoding.GetEncoding("shift-jis"), Encoding.UTF8, outTxtBinArray);
+                    var outTxtBinConverted = new byte[] { };
+
+                    switch (ToolVariables.TxtEncoding)
+                    {
+                        case ToolVariables.EncodingSwitches.lt:
+                            outTxtBinConverted = Encoding.Convert(Encoding.GetEncoding(1252), Encoding.UTF8, outTxtBinArray);
+                            break;
+
+                        case ToolVariables.EncodingSwitches.jp:
+                            outTxtBinConverted = Encoding.Convert(Encoding.GetEncoding(932), Encoding.UTF8, outTxtBinArray);
+                            break;
+                    }
 
                     File.Delete(outFile);
                     File.WriteAllBytes(outFile, outTxtBinConverted);

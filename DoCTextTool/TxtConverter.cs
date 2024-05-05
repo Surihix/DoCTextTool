@@ -16,6 +16,9 @@ namespace DoCTextTool
             Console.WriteLine($"Converting '{Path.GetFileName(inTxtFile)}' data....");
             Console.WriteLine("");
 
+            Console.WriteLine($"Encoding Specified: {ToolVariables.TxtEncoding.ToString().Replace("lt", "Latin").Replace("jp", "Japanese")}");
+            Console.WriteLine("");
+
             var outFile = Path.Combine(Path.GetDirectoryName(inTxtFile), $"{Path.GetFileNameWithoutExtension(inTxtFile)}.bin");
 
             Console.WriteLine("Generating Keyblocks tables....");
@@ -59,9 +62,7 @@ namespace DoCTextTool
                                 {
                                     // Create the base header
                                     // offsets
-                                    var header = new FileStructs.Header();
-                                    header.SeedValueA = 1;
-                                    header.SeedValueB = 0;
+                                    var header = new ToolVariables.Header();
 
                                     headerStream.Seek(0, SeekOrigin.Begin);
                                     headerStream.InsertEmptyBytes(32);
@@ -74,8 +75,8 @@ namespace DoCTextTool
                                     header.DcmpBodySize = (uint)bodyStream.Length;
 
                                     headerWriter.BaseStream.Position = 0;
-                                    headerWriter.Write(header.SeedValueA);
-                                    headerWriter.Write(header.SeedValueB);
+                                    header.SeedValue = 1;
+                                    headerWriter.Write(header.SeedValue);
                                     headerWriter.Write(header.LineCount);
                                     headerWriter.Write(header.Reserved);
                                     headerWriter.Write(header.DcmpFlag);
@@ -125,7 +126,7 @@ namespace DoCTextTool
                                                 // Insert footer bytes for the
                                                 // body section and update these
                                                 // footer offsets accordingly
-                                                var bodyFooter = new FileStructs.BodyFooter();
+                                                var bodyFooter = new ToolVariables.BodyFooter();
                                                 bodyFooter.BodyDataSize = (uint)(cmpbodySize + padNulls);
                                                 bodyFooter.CompressedDataCheckSum = cmpBodyReader.ComputeCheckSum(bodyFooter.BodyDataSize / 4, 0);
 
