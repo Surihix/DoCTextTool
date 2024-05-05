@@ -5,7 +5,7 @@ using System;
 using System.IO;
 using static DoCTextTool.SupportClasses.ToolHelpers;
 
-namespace DoCTextTool.DoCTextTool
+namespace DoCTextTool
 {
     internal class TxtDcmpBinary
     {

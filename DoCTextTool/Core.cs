@@ -1,5 +1,4 @@
-﻿using DoCTextTool.DoCTextTool;
-using DoCTextTool.SupportClasses;
+﻿using DoCTextTool.SupportClasses;
 using System;
 using System.IO;
 using static DoCTextTool.SupportClasses.ToolHelpers;
