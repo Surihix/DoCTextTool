@@ -12,7 +12,7 @@ namespace DoCTextTool
             var exampleMsgArray = new string[]
             {
                 "Examples:", "DoCTextTool.exe -x -lt \"string_us.bin\"", "DoCTextTool.exe -c -lt \"string_us.txt\"",
-                "DoCTextTool.exe -b \"string_us.bin\"", "",
+                "DoCTextTool.exe -b \"string_us.bin\"", "DoCTextTool.exe -g \"MES_60611sk\"", "",
                 "Important:", "Change the filename mentioned in the example to the name or path of" +
                 "\nthe file that you are trying to extract or convert.", ""
             };
@@ -20,7 +20,7 @@ namespace DoCTextTool
             var actionSwitchesMsgArray = new string[]
             {
                 "Action Switches:", "-x = To Extract", "-c = To Convert", "-b = To Extract decompressed binary data",
-                "-h or -? = To display tool instructions"
+                "-g = To Generate line code from line ID", "-h or -? = To display tool instructions"
             };
 
             var encodingSwitchesMsgArray = new string[]
@@ -61,7 +61,7 @@ namespace DoCTextTool
             // depending on the action switch
             var inFile = args[1];
 
-            if (toolActionSwitch != ActionSwitches.b)
+            if (toolActionSwitch != ActionSwitches.b && toolActionSwitch != ActionSwitches.g)
             {
                 if (args.Length < 3)
                 {
@@ -80,7 +80,7 @@ namespace DoCTextTool
                 }
             }
 
-            if (!File.Exists(inFile))
+            if (toolActionSwitch != ActionSwitches.g && !File.Exists(inFile))
             {
                 ExitType.Error.ExitProgram("Specified file is missing");
             }
@@ -100,6 +100,10 @@ namespace DoCTextTool
                     case ActionSwitches.b:
                         TxtDcmpBinary.BinaryProcess(inFile);
                         break;
+
+                    case ActionSwitches.g:
+                        TxtCodeGenerator.GenerateProcess(args[1]);
+                        break;
                 }
             }
             catch (Exception ex)
@@ -112,6 +116,7 @@ namespace DoCTextTool
         {
             b,
             c,
+            g,
             x
         }
     }

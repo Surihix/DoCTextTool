@@ -57,7 +57,7 @@ namespace DoCTextTool.LineClasses
                             {
                                 // Get offsets
                                 outBinReader.BaseStream.Position = readPos;
-                                lineOffsets.UnknownId = outBinReader.ReadUInt32();
+                                lineOffsets.LineIdCode = outBinReader.ReadUInt32();
 
                                 outBinReader.BaseStream.Position = readPos + 4;
                                 lineOffsets.LineIdOffset = outBinReader.ReadUInt32();
@@ -66,7 +66,7 @@ namespace DoCTextTool.LineClasses
                                 lineOffsets.LineOffset = outBinReader.ReadUInt32();
 
                                 // Write UnkID
-                                var unkId = Convert.ToString(lineOffsets.UnknownId);
+                                var unkId = Convert.ToString(lineOffsets.LineIdCode);
                                 var unkIdList = new List<byte>();
                                 ProcessNumStringToList(unkId, unkIdList);
                                 WriteEachByte(unkIdList, outTxtBinWriter, ref writePos);

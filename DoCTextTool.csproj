@@ -57,6 +57,7 @@
     <Compile Include="DoCTextTool\TxtDcmpBinary.cs" />
     <Compile Include="DoCTextTool\TxtExtractor.cs" />
     <Compile Include="DoCTextTool\Core.cs" />
+    <Compile Include="DoCTextTool\TxtCodeGenerator.cs" />
     <Compile Include="DoCTextTool\ZlibClasses\CRC32.cs" />
     <Compile Include="DoCTextTool\ZlibClasses\Deflate.cs" />
     <Compile Include="DoCTextTool\ZlibClasses\DeflateStream.cs" />

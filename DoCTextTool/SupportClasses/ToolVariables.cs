@@ -31,7 +31,7 @@
 
         public class LineOffsets
         {
-            public uint UnknownId { get; set; }
+            public uint LineIdCode { get; set; }
             public uint LineIdOffset { get; set; }
             public uint LineOffset { get; set; }
         }

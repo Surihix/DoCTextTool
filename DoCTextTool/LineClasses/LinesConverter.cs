@@ -41,7 +41,7 @@ namespace DoCTextTool.LineClasses
                     for (int l = 0; l < lineCount; l++)
                     {
                         var currentLineData = inFileReader.ReadLine().Split(new string[] { " || " }, StringSplitOptions.None);
-                        lineOffsets.UnknownId = uint.Parse(currentLineData[0]);
+                        lineOffsets.LineIdCode = uint.Parse(currentLineData[0]);
                         var currentLine = EncodingShift(currentLineData[2]);
 
                         lineOffsets.LineOffset = (uint)linesStream.Length;
@@ -50,7 +50,7 @@ namespace DoCTextTool.LineClasses
                         linesWriter.Write((byte)0);
 
                         bodyWriter.BaseStream.Position = bodySectionWritePos;
-                        bodyWriter.Write(lineOffsets.UnknownId);
+                        bodyWriter.Write(lineOffsets.LineIdCode);
 
                         bodyWriter.BaseStream.Position = bodySectionWritePos + 8;
                         lineOffsets.LineOffset += lineOffsetAbsoluteStartPos;
